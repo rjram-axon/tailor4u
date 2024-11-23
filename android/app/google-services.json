@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "393977764007",
+    "project_id": "tailor4u-703f3",
+    "storage_bucket": "tailor4u-703f3.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:393977764007:android:78210adb39cbd02b296382",
+        "android_client_info": {
+          "package_name": "com.example.tailor4u"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA3yh8NP9x5m0AH3sjq6EDCipkCf4GrbdM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
