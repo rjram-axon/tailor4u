@@ -1,295 +1,343 @@
 import 'package:flutter/material.dart';
-import 'package:carousel_slider/carousel_slider.dart';
+import 'package:carousel_slider/carousel_slider.dart'; // Import carousel_slider package
+import 'package:smooth_page_indicator/smooth_page_indicator.dart'; // Import smooth_page_indicator package
 
-class MainPage extends StatelessWidget {
+class MainPage extends StatefulWidget {
+  @override
+  _MainPageState createState() => _MainPageState();
+}
+
+class _MainPageState extends State<MainPage> {
+  // Create a PageController for the carousel
+  final PageController _carouselController = PageController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          'Tailor4U',
-          style: TextStyle(color: Colors.black),
-        ),
-        centerTitle: true,
         backgroundColor: Colors.white,
-        elevation: 0,
-        actions: [
-          IconButton(
-            icon: Icon(Icons.search, color: Colors.black),
-            onPressed: () {},
-          ),
-        ],
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            HeroSection(),
-            SectionDivider(),
-            SectionTitle(title: 'Our Services'),
-            FeaturedServices(),
-            SectionDivider(),
-            SectionTitle(title: 'How It Works'),
-            HowItWorks(),
-            SectionDivider(),
-          ],
-        ),
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.shopping_cart),
-            label: 'Shop',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profile',
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class HeroSection extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        Container(
-          width: double.infinity,
-          height: 250,
-          decoration: BoxDecoration(
-            color: Colors.blueGrey,
-            // image: DecorationImage(
-            //   // image: AssetImage('assets/hero_bg.jpg'),
-            //   fit: BoxFit.cover,
-            // ),
+        elevation: 1,
+        leading: Icon(Icons.person_outline_rounded),
+        title: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          child: Text(
+            "BLOUSE CRAFT",
+            style: TextStyle(color: Colors.black, fontFamily: 'Outfit-Regular'),
           ),
         ),
-        Container(
-          width: double.infinity,
-          height: 250,
-          color: Colors.black.withOpacity(0.4),
-          child: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  'Discover Our Collection',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 28,
-                    fontWeight: FontWeight.bold,
+      ),
+      body: Stack(
+        children: [
+          Column(
+            children: [
+              // Profile section below AppBar
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(vertical: 20, horizontal: 15),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    // Profile Avatar and Welcome Text
+                    Row(
+                      children: [
+                        CircleAvatar(
+                          radius: 20, // Profile icon size
+                          backgroundColor: Color(0xFFE747D2),
+                          child: Icon(
+                            Icons.person,
+                            color: Colors.white,
+                          ),
+                        ),
+                        SizedBox(width: 10),
+                        Text(
+                          "Welcome Jeyaram", // Replace with dynamic name
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                            fontFamily: 'Outfit-Regular',
+                          ),
+                        ),
+                      ],
+                    ),
+                    // Notification Icon in CircleAvatar
+                    CircleAvatar(
+                      radius: 16, // Match the size of the profile avatar
+                      backgroundColor: Color(0xFFE747D2),
+                      child: IconButton(
+                        icon: Icon(
+                          Icons.notifications,
+                          color: Colors.white,
+                          size: 17,
+                        ),
+                        onPressed: () {
+                          // Add your notification logic here
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              // Main content
+              Expanded(
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.only(
+                      bottom: 80), // Prevent content overlap
+                  child: Padding(
+                    padding: const EdgeInsets.all(12.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Search Bar
+                        SizedBox(
+                          height: 45,
+                          child: TextField(
+                            decoration: InputDecoration(
+                              hintText: "Search",
+                              prefixIcon: Icon(Icons.search),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10),
+                                borderSide: BorderSide(color: Colors.grey),
+                              ),
+                              isDense: true, // Ensures compact layout
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: 16),
+                        // Categories
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text("Category",
+                                style: TextStyle(fontWeight: FontWeight.bold)),
+                            TextButton(
+                              onPressed: () {},
+                              child: Text("See all"),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 16),
+                        // Filters
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            FilterChip(
+                              label: Text("All"),
+                              selected: true,
+                              onSelected: (selected) {},
+                            ),
+                            FilterChip(
+                              label: Text("New collection"),
+                              selected: false,
+                              onSelected: (selected) {},
+                            ),
+                            FilterChip(
+                              label: Text("Trending"),
+                              selected: false,
+                              onSelected: (selected) {},
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 16),
+                        // Carousel with adjusted properties
+                        CarouselSlider(
+                          options: CarouselOptions(
+                            height: 200,
+                            autoPlay: true,
+                            enlargeCenterPage: true,
+                            viewportFraction: 0.85,
+                            onPageChanged: (index, reason) {
+                              // You can update the SmoothPageIndicator here if necessary
+                              setState(
+                                  () {}); // Forces a rebuild to reflect the page change
+                            },
+                          ),
+                          items: [
+                            // Carousel Item 1
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(16),
+                              child: Container(
+                                color: Colors.blueAccent,
+                                child: Center(
+                                  child: Text(
+                                    "Carousel Item 1",
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            // Carousel Item 2
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(16),
+                              child: Container(
+                                color: Colors.greenAccent,
+                                child: Center(
+                                  child: Text(
+                                    "Carousel Item 2",
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            // Carousel Item 3
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(16),
+                              child: Container(
+                                color: Colors.orangeAccent,
+                                child: Center(
+                                  child: Text(
+                                    "Carousel Item 3",
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        // SmoothPageIndicator to customize the dot position
+                        Padding(
+                          padding: const EdgeInsets.only(
+                              left: 130,
+                              top: 10), // Adjust the padding for dot position
+                          child: SmoothPageIndicator(
+                            controller:
+                                _carouselController, // Use the same controller
+                            count: 3, // Number of items in the carousel
+                            effect: ExpandingDotsEffect(
+                              dotWidth: 8,
+                              dotHeight: 8,
+                              expansionFactor: 4,
+                              spacing: 16,
+                              dotColor: Colors.grey,
+                              activeDotColor: Colors.pink,
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: 16),
+                        // Products Grid
+                        GridView.builder(
+                          physics:
+                              NeverScrollableScrollPhysics(), // Prevent scrolling inside GridView
+                          shrinkWrap: true, // Adjust size to fit children
+                          gridDelegate:
+                              SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            mainAxisSpacing: 16,
+                            crossAxisSpacing: 16,
+                            childAspectRatio: 0.75,
+                          ),
+                          itemCount: 6,
+                          itemBuilder: (context, index) {
+                            return Card(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Expanded(
+                                    child: Container(
+                                      color: Colors.grey[300],
+                                      // Placeholder for product image
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          "BLOUSE",
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                        Row(
+                                          children: [
+                                            Text("₹1300",
+                                                style: TextStyle(
+                                                    fontWeight:
+                                                        FontWeight.bold)),
+                                            SizedBox(width: 8),
+                                            Text(
+                                              "₹1500",
+                                              style: TextStyle(
+                                                color: Colors.grey,
+                                                decoration:
+                                                    TextDecoration.lineThrough,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        Row(
+                                          children: [
+                                            Icon(Icons.star,
+                                                color: Colors.pink, size: 16),
+                                            SizedBox(width: 4),
+                                            Text("4.0"),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-                SizedBox(height: 10),
-                CarouselWithExploreButton(),
-              ],
+              ),
+            ],
+          ),
+          // Floating Bottom Navigation Bar
+          Positioned(
+            bottom: 16,
+            left: 16,
+            right: 16,
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(20),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black26,
+                    blurRadius: 10,
+                    offset: Offset(0, 5),
+                  ),
+                ],
+              ),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 10),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    _buildNavBarItem(Icons.home, "Home", Colors.pink),
+                    _buildNavBarItem(Icons.shopping_bag, "Orders", Colors.grey),
+                    _buildNavBarItem(
+                        Icons.grid_view, "Categories", Colors.grey),
+                    _buildNavBarItem(Icons.person, "Profile", Colors.grey),
+                  ],
+                ),
+              ),
             ),
           ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildNavBarItem(IconData icon, String label, Color color) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(icon, color: color),
+        Text(
+          label,
+          style: TextStyle(color: color, fontSize: 12),
         ),
       ],
-    );
-  }
-}
-
-class CarouselWithExploreButton extends StatelessWidget {
-  final List<String> imgList = [
-    'assets/item1.png',
-    'assets/item2.png',
-    'assets/item3.png',
-  ];
-
-  @override
-  Widget build(BuildContext context) {
-    return CarouselSlider(
-      options: CarouselOptions(
-        height: 150,
-        autoPlay: true,
-        enlargeCenterPage: true,
-        aspectRatio: 2.0,
-        autoPlayInterval: Duration(seconds: 3),
-      ),
-      items: imgList.map((item) => buildCarouselCard(item)).toList(),
-    );
-  }
-
-  Widget buildCarouselCard(String imgPath) {
-    return Container(
-      margin: EdgeInsets.all(5.0),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10.0),
-        image: DecorationImage(
-          image: AssetImage(imgPath),
-          fit: BoxFit.cover,
-        ),
-      ),
-      child: Align(
-        alignment: Alignment.bottomCenter,
-        child: ElevatedButton(
-          onPressed: () {
-            // Implement navigation to item details or exploration page
-          },
-          child: Text('Explore'),
-          style: ElevatedButton.styleFrom(
-            primary: Colors.orange,
-            onPrimary: Colors.white,
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class SectionTitle extends StatelessWidget {
-  final String title;
-
-  SectionTitle({required this.title});
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      child: Text(
-        title,
-        style: TextStyle(
-          fontSize: 22,
-          fontWeight: FontWeight.bold,
-          color: Colors.black87,
-        ),
-      ),
-    );
-  }
-}
-
-class SectionDivider extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 16),
-      child: Divider(
-        color: Colors.grey[300],
-        thickness: 1,
-      ),
-    );
-  }
-}
-
-class FeaturedServices extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 16),
-      child: Column(
-        children: [
-          ServiceCard(
-            icon: Icons.design_services,
-            title: 'Custom Clothing',
-          ),
-          ServiceCard(
-            icon: Icons.shop,
-            title: 'Fabric Selection',
-          ),
-          ServiceCard(
-            icon: Icons.shop,
-            title: 'Virtual Fitting Room',
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class ServiceCard extends StatelessWidget {
-  final IconData icon;
-  final String title;
-
-  ServiceCard({required this.icon, required this.title});
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      margin: EdgeInsets.symmetric(vertical: 10),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: Padding(
-        padding: EdgeInsets.all(16),
-        child: Row(
-          children: [
-            Icon(icon, size: 50, color: Colors.blue),
-            SizedBox(width: 20),
-            Text(
-              title,
-              style: TextStyle(fontSize: 18),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class HowItWorks extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 16),
-      child: Column(
-        children: [
-          StepCard(
-            step: 'Choose Fabric',
-            icon: Icons.shop,
-          ),
-          StepCard(
-            step: 'Enter Measurements',
-            icon: Icons.rule,
-          ),
-          StepCard(
-            step: 'Customize Design',
-            icon: Icons.design_services,
-          ),
-          StepCard(
-            step: 'Place Order',
-            icon: Icons.shopping_cart,
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class StepCard extends StatelessWidget {
-  final String step;
-  final IconData icon;
-
-  StepCard({required this.step, required this.icon});
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      margin: EdgeInsets.symmetric(vertical: 10),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: Padding(
-        padding: EdgeInsets.all(16),
-        child: Row(
-          children: [
-            Icon(icon, size: 50, color: Colors.green),
-            SizedBox(width: 20),
-            Text(
-              step,
-              style: TextStyle(fontSize: 18),
-            ),
-          ],
-        ),
-      ),
     );
   }
 }

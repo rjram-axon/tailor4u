@@ -1,62 +1,195 @@
+import 'package:another_flushbar/flushbar.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:pinput/pinput.dart';
 import 'package:tailor4u/screens/main_screen.dart';
 
 class Otpverfication extends StatefulWidget {
-  const Otpverfication({super.key});
+  final String mobileNumber;
+  final String verificationId; // Added verificationId parameter
+
+  const Otpverfication({
+    super.key,
+    required this.mobileNumber,
+    required this.verificationId, // Marked as required
+  });
 
   @override
   State<Otpverfication> createState() => _OtpverficationState();
 }
 
 class _OtpverficationState extends State<Otpverfication> {
+  final TextEditingController _otpController = TextEditingController();
+
+  void _validateAndNavigate() async {
+    String otp = _otpController.text;
+
+    // Validate that OTP is 6 digits long
+    if (otp.isEmpty || otp.length != 6) {
+      _showErrorFlushbar("Please enter a valid 6-digit OTP");
+      return;
+    }
+
+    // Retrieve the verificationId passed from the previous screen
+    final String verificationId = widget.verificationId;
+
+    try {
+      // Create a PhoneAuthCredential with the verificationId and the entered OTP
+      final PhoneAuthCredential credential = PhoneAuthProvider.credential(
+        verificationId: verificationId,
+        smsCode: otp,
+      );
+
+      // Sign in with the credential
+      final UserCredential userCredential =
+          await FirebaseAuth.instance.signInWithCredential(credential);
+
+      // Successfully signed in
+      print("User signed in: ${userCredential.user?.phoneNumber}");
+
+      // Navigate to the MainPage upon successful login
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => MainPage(),
+        ),
+      );
+    } catch (e) {
+      // Handle OTP verification failure
+      print("Error verifying OTP: $e");
+      _showErrorFlushbar("Failed to verify OTP. Please try again.");
+    }
+  }
+
+  void _showErrorFlushbar(String message) {
+    Flushbar(
+      message: message,
+      backgroundColor: const Color(0xFFE74C3C),
+      icon: const Icon(
+        Icons.error_outline,
+        color: Colors.white,
+        size: 28,
+      ),
+      duration: const Duration(seconds: 2),
+      flushbarPosition: FlushbarPosition.TOP,
+      borderRadius: BorderRadius.circular(12),
+      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
+      boxShadows: [
+        BoxShadow(
+          color: Colors.black.withOpacity(0.15),
+          offset: const Offset(0, 4),
+          blurRadius: 8,
+        ),
+      ],
+      animationDuration: const Duration(milliseconds: 600),
+      titleText: const Text(
+        'Error',
+        style: TextStyle(
+          color: Colors.white,
+          fontWeight: FontWeight.bold,
+          fontSize: 12,
+        ),
+      ),
+      messageText: Text(
+        message,
+        style: const TextStyle(
+          color: Colors.white,
+          fontSize: 14,
+        ),
+      ),
+    )..show(context);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
-      body: SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 20),
-              child: Align(
-                alignment: Alignment.topLeft,
-                child: GestureDetector(
-                  onTap: () => Navigator.of(context).pop(),
-                  child: const Icon(Icons.arrow_back, color: Color(0xFF6F4F99)),
-                ),
+      body: Stack(
+        children: [
+          Positioned.fill(
+            child: Container(
+              color: const Color(0xFFB235A1),
+            ),
+          ),
+          Align(
+            alignment: Alignment.topCenter,
+            child: Padding(
+              padding: const EdgeInsets.only(top: 88),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Align(
+                    alignment: Alignment.centerLeft,
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 20),
+                      child: Text(
+                        "Need OTP For LOGIN!! ",
+                        style: TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                            fontFamily: 'Outfit-Bold',
+                            color: Colors.white),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 57),
+                  Image.asset(
+                    'assets/OTP.png',
+                    height: 250,
+                    width: 250,
+                  ),
+                ],
               ),
             ),
-            Padding(
+          ),
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Container(
+              height: 380,
               padding: const EdgeInsets.symmetric(horizontal: 20),
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(30),
+                  topRight: Radius.circular(30),
+                ),
+              ),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   const SizedBox(height: 20),
                   const Text(
                     'Verify your mobile number',
                     style: TextStyle(
-                      fontFamily: 'Montserrat',
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
+                      fontFamily: 'Outfit-Bold',
+                      fontSize: 20,
                       color: Colors.black,
                     ),
                     textAlign: TextAlign.left,
                   ),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 10),
                   const Text(
                     "Enter the OTP sent to your mobile number",
                     style: TextStyle(
-                      fontFamily: 'Montserrat',
+                      fontFamily: 'Outfit-Medium',
                       color: Colors.black54,
-                      fontSize: 16,
+                      fontSize: 14,
                     ),
                   ),
-                  const SizedBox(height: 40),
+                  const SizedBox(height: 8),
+                  Text(
+                    '+91 ${widget.mobileNumber}',
+                    style: const TextStyle(
+                      fontFamily: 'Outfit-Medium',
+                      color: Colors.black54,
+                      fontSize: 14,
+                    ),
+                  ),
+                  const SizedBox(height: 30),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
                     child: Pinput(
+                      controller: _otpController,
                       length: 6,
                       showCursor: true,
                       defaultPinTheme: PinTheme(
@@ -65,22 +198,19 @@ class _OtpverficationState extends State<Otpverfication> {
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(10),
                           border: Border.all(
-                            color: const Color(0xFF6F4F99),
+                            color: const Color(0xFFB235A1),
                           ),
                         ),
                         textStyle: const TextStyle(
-                          fontFamily: 'Montserrat',
+                          fontFamily: 'Outfit-Medium',
                           fontSize: 20,
                           fontWeight: FontWeight.w500,
                           color: Colors.black,
                         ),
                       ),
-                      onSubmitted: (code) {
-                        // Handle OTP submission
-                      },
                     ),
                   ),
-                  const SizedBox(height: 40),
+                  const SizedBox(height: 20),
                   SizedBox(
                     width: double.infinity,
                     height: 55,
@@ -89,7 +219,7 @@ class _OtpverficationState extends State<Otpverfication> {
                         foregroundColor:
                             MaterialStateProperty.all<Color>(Colors.white),
                         backgroundColor: MaterialStateProperty.all<Color>(
-                            const Color(0xFF6F4F99)),
+                            const Color(0xFFFAB2EF)),
                         shape:
                             MaterialStateProperty.all<RoundedRectangleBorder>(
                           RoundedRectangleBorder(
@@ -97,20 +227,13 @@ class _OtpverficationState extends State<Otpverfication> {
                           ),
                         ),
                       ),
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => MainPage(),
-                          ),
-                        );
-                      },
+                      onPressed: _validateAndNavigate,
                       child: const Text(
                         'Verify and Continue',
                         style: TextStyle(
-                          fontFamily: 'Montserrat',
-                          fontSize: 18,
-                        ),
+                            fontFamily: 'Outfit',
+                            fontSize: 18,
+                            color: Colors.black),
                       ),
                     ),
                   ),
@@ -120,13 +243,12 @@ class _OtpverficationState extends State<Otpverfication> {
                     child: Text(
                       "Didn't receive OTP?",
                       style: TextStyle(
-                        fontFamily: 'Montserrat',
+                        fontFamily: 'Outfit-Medium',
                         fontSize: 14,
-                        color: Colors.black54,
                       ),
                     ),
                   ),
-                  const SizedBox(height: 15),
+                  const SizedBox(height: 5),
                   Align(
                     alignment: Alignment.center,
                     child: GestureDetector(
@@ -136,9 +258,9 @@ class _OtpverficationState extends State<Otpverfication> {
                       child: const Text(
                         "Resend OTP",
                         style: TextStyle(
-                          fontFamily: 'Montserrat',
+                          fontFamily: 'Outfit-Bold',
                           fontSize: 14,
-                          color: Color(0xFF6F4F99),
+                          color: Color(0xFFB235A1),
                           decoration: TextDecoration.underline,
                         ),
                       ),
@@ -147,8 +269,8 @@ class _OtpverficationState extends State<Otpverfication> {
                 ],
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

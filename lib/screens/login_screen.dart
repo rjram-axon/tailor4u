@@ -1,159 +1,249 @@
+import 'package:another_flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
+import 'package:tailor4u/authentication/phone_auth.dart';
 import 'package:tailor4u/screens/otp_screen.dart';
 
-class Mobileverify extends StatefulWidget {
-  const Mobileverify({super.key});
+class MobileVerify extends StatefulWidget {
+  const MobileVerify({super.key});
 
   @override
-  State<Mobileverify> createState() => _MobileverifyState();
+  State<MobileVerify> createState() => _MobileVerifyState();
 }
 
-class _MobileverifyState extends State<Mobileverify> {
+class _MobileVerifyState extends State<MobileVerify> {
   final phoneController = TextEditingController();
+  final PhoneAuth _phoneAuth = PhoneAuth(); // Instantiate PhoneAuth
+
+  void _validateAndSendOtp() {
+    String mobile = phoneController.text.trim();
+
+    if (mobile.isEmpty || mobile.length != 10) {
+      _showErrorFlushbar("Please enter a valid 10-digit mobile number");
+    } else {
+      String phoneNumber = "+91$mobile"; // Adjust as per your country code
+      _phoneAuth.sendOtp(
+        phoneNumber: phoneNumber,
+        codeSentCallback: (verificationId, resendToken) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => Otpverfication(
+                mobileNumber: mobile,
+                verificationId: verificationId,
+              ),
+            ),
+          );
+        },
+        verificationFailedCallback: (error) {
+          _showErrorFlushbar(error.message ?? "OTP verification failed");
+        },
+      );
+    }
+  }
+
+  void _showErrorFlushbar(String message) {
+    Flushbar(
+      message: message,
+      backgroundColor: const Color(0xFFE74C3C), // Softer red for a modern look
+      icon: const Icon(
+        Icons.error_outline,
+        color: Colors.white,
+        size: 28, // Slightly larger for emphasis
+      ),
+      duration: const Duration(seconds: 1),
+      flushbarPosition: FlushbarPosition.TOP,
+      borderRadius:
+          BorderRadius.circular(12), // Increased corner radius for modern feel
+      margin: const EdgeInsets.symmetric(
+          horizontal: 16, vertical: 10), // More balanced margin
+      padding: const EdgeInsets.symmetric(
+          vertical: 16,
+          horizontal: 20), // Generous padding for a cleaner layout
+      boxShadows: [
+        BoxShadow(
+          color: Colors.black.withOpacity(0.15), // Subtle shadow for elegance
+          offset: const Offset(0, 4),
+          blurRadius: 8,
+        ),
+      ],
+      animationDuration: const Duration(milliseconds: 600), // Smooth animation
+      // mainButton: TextButton(
+      //   onPressed: () {
+      //     // Add any action if needed
+      //   },
+      //   child: const Text(
+      //     'DISMISS',
+      //     style: TextStyle(
+      //       color: Colors.white,
+      //       fontWeight: FontWeight.bold,
+      //     ),
+      //   ),
+      // ),
+      shouldIconPulse: false,
+      titleText: const Text(
+        'Error',
+        style: TextStyle(
+          color: Colors.white,
+          fontWeight: FontWeight.bold,
+          fontSize: 12,
+        ),
+      ),
+      messageText: Text(
+        message,
+        style: const TextStyle(
+          color: Colors.white,
+          fontSize: 14,
+        ),
+      ),
+    )..show(context);
+  }
 
   @override
   Widget build(BuildContext context) {
-    final _formkey = GlobalKey<FormState>();
-    phoneController.selection = TextSelection.fromPosition(
-        TextPosition(offset: phoneController.text.length));
-
     return Scaffold(
-      backgroundColor: Colors.white,
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 20),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Align(
-                  alignment: Alignment.topLeft,
-                  child: GestureDetector(
-                    onTap: () => Navigator.of(context).pop(),
-                    child:
-                        const Icon(Icons.arrow_back, color: Color(0xFF6F4F99)),
-                  ),
-                ),
-                const SizedBox(height: 20),
-                const Text(
-                  'Get Started with Daily Eats',
-                  style: TextStyle(
-                    fontFamily: 'Inder',
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
-                  ),
-                  textAlign: TextAlign.left,
-                ),
-                const SizedBox(height: 20),
-                const Text(
-                  'Enter Mobile Number to get OTP',
-                  style: TextStyle(
-                    fontFamily: 'Inder',
-                    color: Colors.black54,
-                    fontSize: 16,
-                  ),
-                ),
-                const SizedBox(height: 40),
-                TextField(
-                  maxLength: 10,
-                  keyboardType: TextInputType.number,
-                  style: const TextStyle(fontFamily: 'Inder', fontSize: 18),
-                  cursorColor: const Color(0xFF127E09),
-                  controller: phoneController,
-                  decoration: InputDecoration(
-                    hintText: '10 digit mobile number',
-                    hintStyle: const TextStyle(
-                      fontFamily: 'Inder',
-                      color: Colors.black26,
-                      fontSize: 16,
-                    ),
-                    labelText: 'Mobile Number',
-                    counterText: '',
-                    labelStyle: const TextStyle(
-                      color: Color(0xFF6F4F99),
-                      fontFamily: 'Inder',
-                    ),
-                    prefixText: '+91  ',
-                    prefixStyle: const TextStyle(
-                      fontFamily: 'Inder',
-                      fontSize: 18,
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: const BorderSide(color: Colors.black26),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: const BorderSide(color: Color(0xFF127E09)),
+      body: Stack(
+        children: [
+          // Background Color
+          Positioned.fill(
+            child: Container(
+              color: const Color(0xFFB235A1), // Background color (orange)
+            ),
+          ),
+          // Top Section
+          Align(
+            alignment: Alignment.topCenter,
+            child: Padding(
+              padding: const EdgeInsets.only(top: 130),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Align(
+                    alignment: Alignment.center,
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 40),
+                      child: Text(
+                        "Welcome Back Log In! ",
+                        style: TextStyle(
+                            fontSize: 22,
+                            fontWeight: FontWeight.bold,
+                            fontFamily: 'Outfit-Bold',
+                            color: Colors.white),
+                      ),
                     ),
                   ),
+                  const SizedBox(height: 83),
+                  // Illustration/Image Placeholder
+                  Image.asset(
+                    'assets/Login.png', // Replace with your illustration
+                    height: 250,
+                    width: 250,
+                  ),
+                ],
+              ),
+            ),
+          ),
+          // Bottom Section
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Container(
+              height: 330,
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              decoration: const BoxDecoration(
+                color: Colors.white, // Light yellow background
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(30),
+                  topRight: Radius.circular(30),
                 ),
-                const SizedBox(height: 40),
-                SizedBox(
-                  width: double.infinity,
-                  height: 55,
-                  child: ElevatedButton(
-                    style: ButtonStyle(
-                      foregroundColor:
-                          MaterialStateProperty.all<Color>(Colors.white),
-                      backgroundColor: MaterialStateProperty.all<Color>(
-                          const Color(0xFF6F4F99)),
-                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                        RoundedRectangleBorder(
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  const SizedBox(height: 20),
+                  // "Hello!" Text
+                  const Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      "Hello!",
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontFamily: 'Outfit-Medium',
+                        color: Color(0xFFB235A1),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 15),
+                  // Subtitle Text
+                  const Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      "Login to UR Account",
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Colors.grey,
+                        fontFamily: 'Outfit-Regular',
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 40),
+                  // Mobile Input Field
+                  SizedBox(
+                    height: 50, // Set exact height from design
+                    child: TextField(
+                      controller: phoneController,
+                      maxLength: 10,
+                      style: const TextStyle(fontFamily: 'Outfit-Regular'),
+                      keyboardType: TextInputType.number,
+                      decoration: InputDecoration(
+                        prefixText: '+91  ',
+                        prefixStyle: const TextStyle(
+                          fontFamily: 'Outfit-Regular',
+                          fontSize: 18,
+                        ),
+                        labelText: 'Mobile',
+                        hintText: 'Enter Your Number',
+                        hintStyle: const TextStyle(
+                          fontSize: 14,
+                          fontFamily: 'Outfit-Regular',
+                          color: Colors.grey,
+                        ),
+                        prefixIcon: const Icon(Icons.phone),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        counterText: "",
+                        isDense: true, // Ensures compact layout
+                      ),
+                    ),
+                  ),
+
+                  const SizedBox(height: 40),
+                  // "Get OTP" Button
+                  SizedBox(
+                    width: double.infinity,
+                    height: 45,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Color(0xFFFAB2EF), // Light Salmon
+                        shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),
                         ),
                       ),
-                    ),
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => Otpverfication(),
-                        ),
-                      );
-                    },
-                    child: const Text(
-                      'Get OTP',
-                      style: TextStyle(
-                        fontFamily: 'Inder',
-                        fontSize: 18,
+                      onPressed: _validateAndSendOtp,
+                      child: const Text(
+                        "Get OTP",
+                        style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                            fontFamily: 'Outfit-Bold'),
                       ),
                     ),
                   ),
-                ),
-                const SizedBox(height: 20),
-                Padding(
-                  padding: const EdgeInsets.only(left: 20),
-                  child: RichText(
-                    text: const TextSpan(
-                      children: [
-                        TextSpan(
-                          text: 'By Clicking I accept your  ',
-                          style: TextStyle(
-                            fontFamily: 'Inder',
-                            fontSize: 14,
-                            color: Colors.black26,
-                          ),
-                        ),
-                        TextSpan(
-                          text: 'Terms of use and privacy policy',
-                          style: TextStyle(
-                            fontFamily: 'Inder',
-                            fontSize: 14,
-                            color: Color(0xFF6F4F99),
-                            decoration: TextDecoration.underline,
-                          ),
-                          // Add functionality for terms and privacy policy links
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
-        ),
+        ],
       ),
     );
   }

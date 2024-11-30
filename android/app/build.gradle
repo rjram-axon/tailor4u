@@ -51,6 +51,8 @@ android {
         targetSdkVersion flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
+
+        
     }
 
     buildTypes {
@@ -68,4 +70,7 @@ flutter {
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation 'com.google.firebase:firebase-auth:21.1.0' // Add the Firebase Authentication SDK
+    implementation 'com.google.firebase:firebase-analytics:21.1.0' // Add Firebase Analytics (optional)
 }
+apply plugin: 'com.google.gms.google-services' // Required for Firebase

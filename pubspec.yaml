@@ -40,6 +40,8 @@ dependencies:
   pinput: ^2.2.21
   firebase_core: ^2.24.2
   firebase_auth: ^4.16.0
+  another_flushbar: ^1.12.30
+  smooth_page_indicator: ^1.2.0+3
 
 
 dev_dependencies:
@@ -64,7 +66,32 @@ flutter:
   # the material Icons class.
   uses-material-design: true
   assets:
+    - assets/Font/Agbalumo-Regular.ttf
     - assets/
+    - assets/Icons/google_search.png
+  fonts:
+    - family: Agbalumo
+      fonts:
+        - asset: assets/Font/Agbalumo-Regular.ttf
+    - family: Outfit
+      fonts:
+        - asset: assets/Font/Outfit-ExtraBold.ttf
+    - family: Outfit-Black
+      fonts:
+        - asset: assets/Font/Outfit-Black.ttf
+    - family: Outfit-Bold
+      fonts:
+        - asset: assets/Font/Outfit-Bold.ttf
+    - family: Outfit-Medium
+      fonts:
+        - asset: assets/Font/Outfit-Medium.ttf
+    - family: Outfit-Regular
+      fonts:
+        - asset: assets/Font/Outfit-Regular.ttf
+    - family: Outfit-SemiBold
+      fonts:
+        - asset: assets/Font/Outfit-SemiBold.ttf
+      
 
   # To add assets to your application, add an assets section, like this:
   # assets:
