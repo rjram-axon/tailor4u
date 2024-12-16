@@ -7,19 +7,22 @@
         {
             "name": "tailor4u",
             "request": "launch",
-            "type": "dart"
+            "type": "dart",
+            "program": "lib/main.dart" // Entry point for the app
         },
         {
             "name": "tailor4u (profile mode)",
             "request": "launch",
             "type": "dart",
-            "flutterMode": "profile"
+            "flutterMode": "profile",
+            "program": "lib/main.dart" // Entry point for profile mode
         },
         {
             "name": "tailor4u (release mode)",
             "request": "launch",
             "type": "dart",
-            "flutterMode": "release"
+            "flutterMode": "release",
+            "program": "lib/main.dart" // Entry point for release mode
         }
     ]
 }

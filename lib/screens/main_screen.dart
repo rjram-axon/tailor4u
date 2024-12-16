@@ -1,6 +1,12 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:carousel_slider/carousel_slider.dart'; // Import carousel_slider package
-import 'package:smooth_page_indicator/smooth_page_indicator.dart'; // Import smooth_page_indicator package
+import 'package:carousel_slider/carousel_slider.dart'
+    as carousel_slider; // Import carousel_slider package
+import 'package:flutter/services.dart';
+import 'package:smooth_page_indicator/smooth_page_indicator.dart';
+import 'package:tailor4u/authentication/profile_service.dart';
+import 'package:tailor4u/screens/otp_screen.dart';
+import 'package:tailor4u/screens/profile.dart';
 
 class MainPage extends StatefulWidget {
   @override
@@ -8,282 +14,442 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
+  @override
+  void initState() {
+    super.initState();
+    _fetchProfile();
+  }
+
   // Create a PageController for the carousel
-  final PageController _carouselController = PageController();
+  final CarouselController carouselController = CarouselController();
+  int _activeIndex = 0;
+  int _swipeCount = 0; // Track the number of swipes
+  DateTime? _lastSwipeTime; // To track the time of the last swipe
+  String profilePic = 'assets/item1.png'; // Default profile pic
+  final ProfileService _profileService = ProfileService();
+  String name = '';
+
+  Future<void> _fetchProfile() async {
+    // Get the mobile number from UserService
+    String? mobNum = await _profileService.getProcessedMobileNumber();
+    if (mobNum != null) {
+      await _profileService.loadFromLocalStorage(); // Load from local storage
+      setState(() {
+        name = ProfileService().name;
+        profilePic = ProfileService().profilePic;
+      });
+    } else {
+      setState(() {
+        name = 'Mobile number not available';
+      });
+    }
+  }
+
+  void _navigateToProfile() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => ProfilePage()),
+    );
+  }
+
+  // Function to handle swipe logic
+  void _handleSwipe() {
+    final now = DateTime.now();
+    if (_lastSwipeTime == null ||
+        now.difference(_lastSwipeTime!) > const Duration(seconds: 2)) {
+      // Reset the swipe count if more than 2 seconds have passed since the last swipe
+      _swipeCount = 0;
+    }
+
+    _lastSwipeTime = now;
+    _swipeCount++;
+
+    if (_swipeCount >= 2) {
+      // Close the app after two swipes
+      SystemNavigator.pop();
+    } else {
+      // Provide feedback to the user (like a message or toast) if they haven't swiped twice yet
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Swipe again to exit the app")),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 1,
-        leading: Icon(Icons.person_outline_rounded),
-        title: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: Text(
-            "BLOUSE CRAFT",
-            style: TextStyle(color: Colors.black, fontFamily: 'Outfit-Regular'),
+    return WillPopScope(
+      onWillPop: () async {
+        // Return false to prevent the back gesture from being triggered
+        return false;
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: Color(0xFFBE359C),
+          elevation: 1,
+          automaticallyImplyLeading: false,
+          title: Align(
+            alignment: Alignment.center,
+            child: Text(
+              "BLOUSE CRAFT",
+              style:
+                  TextStyle(color: Colors.white, fontFamily: 'Outfit-Regular'),
+            ),
           ),
         ),
-      ),
-      body: Stack(
-        children: [
-          Column(
+        body: GestureDetector(
+          onHorizontalDragEnd: (details) {
+            // Detect swipe end
+            if (details.primaryVelocity != null &&
+                details.primaryVelocity! > 0) {
+              // Swipe from left to right
+              _handleSwipe();
+            }
+          },
+          child: Stack(
             children: [
-              // Profile section below AppBar
-              Padding(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 20, horizontal: 15),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    // Profile Avatar and Welcome Text
-                    Row(
+              Column(
+                children: [
+                  // Profile section below AppBar
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 20, horizontal: 15),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        CircleAvatar(
-                          radius: 20, // Profile icon size
-                          backgroundColor: Color(0xFFE747D2),
-                          child: Icon(
-                            Icons.person,
-                            color: Colors.white,
-                          ),
+                        // Profile Avatar and Welcome Text
+                        Row(
+                          children: [
+                            CircleAvatar(
+                              radius: 20, // Profile icon size
+                              backgroundColor: Color(0xFFD360C4),
+                              child: Icon(
+                                Icons.person,
+                                color: Colors.white,
+                              ),
+                            ),
+                            SizedBox(width: 10),
+                            Text(
+                              "Welcome $name", // Replace with dynamic name
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                                fontFamily: 'Outfit-Regular',
+                              ),
+                            ),
+                          ],
                         ),
-                        SizedBox(width: 10),
-                        Text(
-                          "Welcome Jeyaram", // Replace with dynamic name
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.bold,
-                            fontFamily: 'Outfit-Regular',
+                        // Notification Icon in CircleAvatar
+                        CircleAvatar(
+                          radius: 16, // Match the size of the profile avatar
+                          backgroundColor: Color(0xFFE747D2),
+                          child: IconButton(
+                            icon: Icon(
+                              Icons.notifications,
+                              color: Colors.white,
+                              size: 17,
+                            ),
+                            onPressed: () {
+                              // Add your notification logic here
+                            },
                           ),
                         ),
                       ],
                     ),
-                    // Notification Icon in CircleAvatar
-                    CircleAvatar(
-                      radius: 16, // Match the size of the profile avatar
-                      backgroundColor: Color(0xFFE747D2),
-                      child: IconButton(
-                        icon: Icon(
-                          Icons.notifications,
-                          color: Colors.white,
-                          size: 17,
-                        ),
-                        onPressed: () {
-                          // Add your notification logic here
-                        },
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              // Main content
-              Expanded(
-                child: SingleChildScrollView(
-                  padding: const EdgeInsets.only(
-                      bottom: 80), // Prevent content overlap
-                  child: Padding(
-                    padding: const EdgeInsets.all(12.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // Search Bar
-                        SizedBox(
-                          height: 45,
-                          child: TextField(
-                            decoration: InputDecoration(
-                              hintText: "Search",
-                              prefixIcon: Icon(Icons.search),
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10),
-                                borderSide: BorderSide(color: Colors.grey),
-                              ),
-                              isDense: true, // Ensures compact layout
-                            ),
-                          ),
-                        ),
-                        SizedBox(height: 16),
-                        // Categories
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  ),
+                  // Main content
+                  Expanded(
+                    child: SingleChildScrollView(
+                      padding: const EdgeInsets.only(
+                          bottom: 80), // Prevent content overlap
+                      child: Padding(
+                        padding: const EdgeInsets.all(12.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text("Category",
-                                style: TextStyle(fontWeight: FontWeight.bold)),
-                            TextButton(
-                              onPressed: () {},
-                              child: Text("See all"),
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 16),
-                        // Filters
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            FilterChip(
-                              label: Text("All"),
-                              selected: true,
-                              onSelected: (selected) {},
-                            ),
-                            FilterChip(
-                              label: Text("New collection"),
-                              selected: false,
-                              onSelected: (selected) {},
-                            ),
-                            FilterChip(
-                              label: Text("Trending"),
-                              selected: false,
-                              onSelected: (selected) {},
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 16),
-                        // Carousel with adjusted properties
-                        CarouselSlider(
-                          options: CarouselOptions(
-                            height: 200,
-                            autoPlay: true,
-                            enlargeCenterPage: true,
-                            viewportFraction: 0.85,
-                            onPageChanged: (index, reason) {
-                              // You can update the SmoothPageIndicator here if necessary
-                              setState(
-                                  () {}); // Forces a rebuild to reflect the page change
-                            },
-                          ),
-                          items: [
-                            // Carousel Item 1
-                            ClipRRect(
-                              borderRadius: BorderRadius.circular(16),
-                              child: Container(
-                                color: Colors.blueAccent,
-                                child: Center(
-                                  child: Text(
-                                    "Carousel Item 1",
-                                    style: TextStyle(color: Colors.white),
+                            // Search Bar
+                            SizedBox(
+                              height: 45,
+                              child: TextField(
+                                decoration: InputDecoration(
+                                  hintText: "Search",
+                                  prefixIcon: Icon(Icons.search),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                    borderSide: BorderSide(color: Colors.grey),
                                   ),
+                                  isDense: true, // Ensures compact layout
                                 ),
                               ),
                             ),
-                            // Carousel Item 2
-                            ClipRRect(
-                              borderRadius: BorderRadius.circular(16),
-                              child: Container(
-                                color: Colors.greenAccent,
-                                child: Center(
-                                  child: Text(
-                                    "Carousel Item 2",
-                                    style: TextStyle(color: Colors.white),
+                            SizedBox(height: 16),
+                            // Categories
+                            carousel_slider.CarouselSlider.builder(
+                              options: carousel_slider.CarouselOptions(
+                                height: 200, // Height of the carousel
+                                autoPlay: true, // Enable auto play
+                                enlargeCenterPage:
+                                    true, // Enlarge the center item
+                                viewportFraction:
+                                    0.85, // Adjust visible portion
+                                onPageChanged: (index, reason) {
+                                  setState(() {
+                                    _activeIndex =
+                                        index; // Update active index for indicator
+                                  });
+                                },
+                              ),
+                              itemCount: 3, // Number of carousel items
+                              itemBuilder: (context, index, realIndex) {
+                                return Container(
+                                  margin: EdgeInsets.symmetric(horizontal: 3),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(16),
+                                    color: Colors.grey,
                                   ),
-                                ),
-                              ),
-                            ),
-                            // Carousel Item 3
-                            ClipRRect(
-                              borderRadius: BorderRadius.circular(16),
-                              child: Container(
-                                color: Colors.orangeAccent,
-                                child: Center(
-                                  child: Text(
-                                    "Carousel Item 3",
-                                    style: TextStyle(color: Colors.white),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        // SmoothPageIndicator to customize the dot position
-                        Padding(
-                          padding: const EdgeInsets.only(
-                              left: 130,
-                              top: 10), // Adjust the padding for dot position
-                          child: SmoothPageIndicator(
-                            controller:
-                                _carouselController, // Use the same controller
-                            count: 3, // Number of items in the carousel
-                            effect: ExpandingDotsEffect(
-                              dotWidth: 8,
-                              dotHeight: 8,
-                              expansionFactor: 4,
-                              spacing: 16,
-                              dotColor: Colors.grey,
-                              activeDotColor: Colors.pink,
-                            ),
-                          ),
-                        ),
-                        SizedBox(height: 16),
-                        // Products Grid
-                        GridView.builder(
-                          physics:
-                              NeverScrollableScrollPhysics(), // Prevent scrolling inside GridView
-                          shrinkWrap: true, // Adjust size to fit children
-                          gridDelegate:
-                              SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 2,
-                            mainAxisSpacing: 16,
-                            crossAxisSpacing: 16,
-                            childAspectRatio: 0.75,
-                          ),
-                          itemCount: 6,
-                          itemBuilder: (context, index) {
-                            return Card(
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Expanded(
-                                    child: Container(
-                                      color: Colors.grey[300],
-                                      // Placeholder for product image
+                                  child: Center(
+                                    child: Text(
+                                      "Item ${index + 1}",
+                                      style: TextStyle(
+                                          color: Colors.white, fontSize: 20),
                                     ),
                                   ),
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          "BLOUSE",
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold),
+                                );
+                              },
+                            ),
+                            SizedBox(height: 16),
+                            // SmoothPageIndicator
+                            Align(
+                              alignment: Alignment.center,
+                              child: AnimatedSmoothIndicator(
+                                activeIndex: _activeIndex,
+                                count: 3, // Number of carousel items
+                                effect: ExpandingDotsEffect(
+                                  dotHeight: 8,
+                                  dotWidth: 8,
+                                  spacing: 8,
+                                  expansionFactor: 3,
+                                  dotColor: Colors.grey,
+                                  activeDotColor: Colors.pink,
+                                ),
+                              ),
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text("Category",
+                                    style: TextStyle(
+                                        fontFamily: 'Outfit-Regular',
+                                        fontWeight: FontWeight.bold)),
+                                TextButton(
+                                  onPressed: () {
+                                    // Add your onPressed logic here
+                                  },
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Text(
+                                        "See all",
+                                        style: TextStyle(
+                                            fontFamily: 'Outfit-Regular',
+                                            color: Colors.black),
+                                      ),
+                                      SizedBox(
+                                          width:
+                                              4), // Add some spacing between text and icon
+                                      Icon(
+                                        Icons
+                                            .arrow_forward_ios, // Right arrow icon
+                                        color: Colors.black,
+                                        size: 12, // Adjust the size as needed
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                            SizedBox(height: 16),
+                            // Filters
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                FilterChip(
+                                  label: Text(
+                                    "All",
+                                    style: TextStyle(
+                                        fontFamily: 'Outfit-Regular',
+                                        color: Colors
+                                            .black), // Text color when selected
+                                  ),
+                                  selected: true, // Selected state
+                                  onSelected: (selected) {},
+                                  backgroundColor: Colors.grey
+                                      .shade300, // Default background color
+                                  selectedColor: Color(
+                                      0xFFFAB2EF), // Background color when selected
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(
+                                        10), // Rounded corners
+                                  ),
+                                  elevation: 4, // Shadow effect
+                                  pressElevation: 8, // Elevation on press
+                                ),
+                                FilterChip(
+                                  label: Text(
+                                    "New collection",
+                                    style: TextStyle(
+                                        fontFamily: "Outfit-Regular",
+                                        color: Colors
+                                            .black), // Text color when not selected
+                                  ),
+                                  selected: false, // Selected state
+                                  onSelected: (selected) {},
+                                  backgroundColor: Colors.grey
+                                      .shade300, // Default background color
+                                  selectedColor: Color(
+                                      0xFFFAB2EF), // Background color when selected
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(
+                                        10), // Rounded corners
+                                  ),
+                                  elevation: 2, // Shadow effect
+                                  pressElevation: 4, // Elevation on press
+                                ),
+                                FilterChip(
+                                  label: Text(
+                                    "Trending",
+                                    style: TextStyle(
+                                        fontFamily: 'Outfit-Regular',
+                                        color: Colors
+                                            .black), // Text color when not selected
+                                  ),
+                                  selected: false, // Selected state
+                                  onSelected: (selected) {},
+                                  backgroundColor: Colors.grey
+                                      .shade300, // Default background color
+                                  selectedColor: Color(
+                                      0xFFFAB2EF), // Background color when selected
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(
+                                        10), // Rounded corners
+                                  ),
+                                  elevation: 2, // Shadow effect
+                                  pressElevation: 4, // Elevation on press
+                                ),
+                              ],
+                            ),
+                            SizedBox(height: 16),
+                            // Carousel with adjusted properties
+                            SizedBox(height: 16),
+                            // Products Grid
+                            GridView.builder(
+                              physics:
+                                  NeverScrollableScrollPhysics(), // Prevent scrolling inside GridView
+                              shrinkWrap: true, // Adjust size to fit children
+                              gridDelegate:
+                                  SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 2,
+                                mainAxisSpacing: 16,
+                                crossAxisSpacing: 16,
+                                childAspectRatio: 0.75,
+                              ),
+                              itemCount: 6,
+                              itemBuilder: (context, index) {
+                                return Card(
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Expanded(
+                                        child: Container(
+                                          color: Colors.grey[300],
+                                          // Placeholder for product image
                                         ),
-                                        Row(
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
                                           children: [
-                                            Text("₹1300",
-                                                style: TextStyle(
-                                                    fontWeight:
-                                                        FontWeight.bold)),
-                                            SizedBox(width: 8),
                                             Text(
-                                              "₹1500",
+                                              "BLOUSE",
                                               style: TextStyle(
-                                                color: Colors.grey,
-                                                decoration:
-                                                    TextDecoration.lineThrough,
-                                              ),
+                                                  fontWeight: FontWeight.bold),
+                                            ),
+                                            Row(
+                                              children: [
+                                                Text("₹1300",
+                                                    style: TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.bold)),
+                                                SizedBox(width: 8),
+                                                Text(
+                                                  "₹1500",
+                                                  style: TextStyle(
+                                                    color: Colors.grey,
+                                                    decoration: TextDecoration
+                                                        .lineThrough,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                            Row(
+                                              children: [
+                                                Icon(Icons.star,
+                                                    color: Colors.pink,
+                                                    size: 16),
+                                                SizedBox(width: 4),
+                                                Text("4.0"),
+                                              ],
                                             ),
                                           ],
                                         ),
-                                        Row(
-                                          children: [
-                                            Icon(Icons.star,
-                                                color: Colors.pink, size: 16),
-                                            SizedBox(width: 4),
-                                            Text("4.0"),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
+                                      ),
+                                    ],
                                   ),
-                                ],
-                              ),
-                            );
-                          },
+                                );
+                              },
+                            ),
+                          ],
                         ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              // Floating Bottom Navigation Bar
+              Positioned(
+                bottom: 16,
+                left: 16,
+                right: 16,
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(20),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black26,
+                        blurRadius: 10,
+                        offset: Offset(0, 5),
+                      ),
+                    ],
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 10),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        _buildNavBarItem(
+                            Icons.home, "Home", Colors.pink, () {}),
+                        _buildNavBarItem(
+                            Icons.shopping_bag, "Orders", Colors.grey, () {}),
+                        _buildNavBarItem(
+                            Icons.grid_view, "Categories", Colors.grey, () {}),
+                        _buildNavBarItem(Icons.person, "Profile", Colors.grey,
+                            _navigateToProfile),
                       ],
                     ),
                   ),
@@ -291,53 +457,25 @@ class _MainPageState extends State<MainPage> {
               ),
             ],
           ),
-          // Floating Bottom Navigation Bar
-          Positioned(
-            bottom: 16,
-            left: 16,
-            right: 16,
-            child: Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(20),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black26,
-                    blurRadius: 10,
-                    offset: Offset(0, 5),
-                  ),
-                ],
-              ),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 10),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    _buildNavBarItem(Icons.home, "Home", Colors.pink),
-                    _buildNavBarItem(Icons.shopping_bag, "Orders", Colors.grey),
-                    _buildNavBarItem(
-                        Icons.grid_view, "Categories", Colors.grey),
-                    _buildNavBarItem(Icons.person, "Profile", Colors.grey),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }
 
-  Widget _buildNavBarItem(IconData icon, String label, Color color) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Icon(icon, color: color),
-        Text(
-          label,
-          style: TextStyle(color: color, fontSize: 12),
-        ),
-      ],
+  Widget _buildNavBarItem(
+      IconData icon, String label, Color color, VoidCallback onTap) {
+    return GestureDetector(
+      onTap: onTap, // Trigger the navigation or other action on tap
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, color: color),
+          Text(
+            label,
+            style: TextStyle(color: color, fontSize: 12),
+          ),
+        ],
+      ),
     );
   }
 }

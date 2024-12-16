@@ -2,6 +2,8 @@ import 'package:another_flushbar/flushbar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:pinput/pinput.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+// import 'package:tailor4u/authentication/profile_service.dart';
 import 'package:tailor4u/screens/main_screen.dart';
 
 class Otpverfication extends StatefulWidget {
@@ -20,44 +22,71 @@ class Otpverfication extends StatefulWidget {
 
 class _OtpverficationState extends State<Otpverfication> {
   final TextEditingController _otpController = TextEditingController();
+  // final ProfileService _profileService = ProfileService();
 
   void _validateAndNavigate() async {
     String otp = _otpController.text;
 
-    // Validate that OTP is 6 digits long
     if (otp.isEmpty || otp.length != 6) {
       _showErrorFlushbar("Please enter a valid 6-digit OTP");
       return;
     }
 
-    // Retrieve the verificationId passed from the previous screen
     final String verificationId = widget.verificationId;
-
     try {
-      // Create a PhoneAuthCredential with the verificationId and the entered OTP
+      // Create PhoneAuthCredential using the OTP and verification ID
       final PhoneAuthCredential credential = PhoneAuthProvider.credential(
         verificationId: verificationId,
         smsCode: otp,
       );
 
-      // Sign in with the credential
+      // Attempt to sign in
       final UserCredential userCredential =
           await FirebaseAuth.instance.signInWithCredential(credential);
+      final User? user = FirebaseAuth.instance.currentUser;
+      if (user != null) {
+        // Get the phone number of the authenticated user
+        String? mobNum = user.phoneNumber;
+        print("User signed in: $mobNum");
+
+        // Store the mobile number globally
+        if (mobNum != null) {
+          await UserService().setUserMobile(mobNum);
+        }
+
+        // Navigate to the main page
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => MainPage(),
+          ),
+        );
+      } else {
+        _showErrorFlushbar("User not found after successful OTP verification.");
+      }
+      print("Firebase User: ${user?.uid}");
 
       // Successfully signed in
       print("User signed in: ${userCredential.user?.phoneNumber}");
 
-      // Navigate to the MainPage upon successful login
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
           builder: (context) => MainPage(),
         ),
       );
+    } on FirebaseAuthException catch (e) {
+      print("FirebaseAuthException: ${e.message}");
+      _showErrorFlushbar("Failed to verify OTP: ${e.message}");
     } catch (e) {
-      // Handle OTP verification failure
-      print("Error verifying OTP: $e");
-      _showErrorFlushbar("Failed to verify OTP. Please try again.");
+      print("Unexpected error verifying OTP: $e");
+
+      // Additional handling for type-related errors
+      if (e is TypeError) {
+        _showErrorFlushbar("A type error occurred. Please contact support.");
+      } else {
+        _showErrorFlushbar("An unexpected error occurred. Please try again.");
+      }
     }
   }
 
@@ -273,5 +302,35 @@ class _OtpverficationState extends State<Otpverfication> {
         ],
       ),
     );
+  }
+}
+
+class UserService {
+  // Singleton pattern to ensure only one instance of UserService is used
+  static final UserService _instance = UserService._internal();
+
+  factory UserService() {
+    return _instance;
+  }
+
+  UserService._internal();
+
+  String? userMobile;
+
+  // Optionally, add methods to retrieve and store userMobile globally
+  Future<void> setUserMobile(String mobile) async {
+    userMobile = mobile;
+    // Optionally save to SharedPreferences
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString('userMobile', mobile);
+    prefs.setBool('isLoggedIn', true);
+  }
+
+  Future<String?> getUserMobile() async {
+    if (userMobile == null) {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      userMobile = prefs.getString('userMobile');
+    }
+    return userMobile;
   }
 }

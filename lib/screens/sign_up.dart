@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tailor4u/authentication/phone_auth.dart';
 import 'package:tailor4u/screens/login_screen.dart';
 import 'package:tailor4u/screens/otp_screen.dart';
 import 'package:another_flushbar/flushbar.dart'; // Add Flushbar package
+import 'package:http/http.dart' as http; // Add http package for API calls
+import 'dart:convert';
 
 class SignupScreen extends StatefulWidget {
   const SignupScreen({Key? key}) : super(key: key);
@@ -18,6 +21,7 @@ class _SignupScreenState extends State<SignupScreen> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _mobileController = TextEditingController();
   final PhoneAuth _phoneAuth = PhoneAuth(); // Instantiate PhoneAuth
+  final phoneController = TextEditingController();
 
   Future<bool> _onWillPop() async {
     final now = DateTime.now();
@@ -40,16 +44,10 @@ class _SignupScreenState extends State<SignupScreen> {
     }
   }
 
-  void _validateAndNavigate() {
-    // Check if both fields are filled and mobile number is 10 digits
-    String name = _nameController.text;
-    String mobile = _mobileController.text;
+  void _sendOtp(String mobile) {
+    String mobile = _mobileController.text.trim();
 
-    if (name.isEmpty) {
-      // Show error if name is empty
-      _showErrorFlushbar("Please enter your name");
-    } else if (mobile.isEmpty || mobile.length != 10) {
-      // Show error if mobile is not valid
+    if (mobile.isEmpty || mobile.length != 10) {
       _showErrorFlushbar("Please enter a valid 10-digit mobile number");
     } else {
       String phoneNumber = "+91$mobile"; // Adjust as per your country code
@@ -70,6 +68,57 @@ class _SignupScreenState extends State<SignupScreen> {
           _showErrorFlushbar(error.message ?? "OTP verification failed");
         },
       );
+    }
+  }
+
+  Future<void> _saveUserDetails(String name, String mobnum) async {
+    String name = _nameController.text;
+    String mobnum = _mobileController.text;
+
+  
+    // Construct the API URL with query parameters
+    final String apiUrl =
+        "https://sxzhq34r-3000.inc1.devtunnels.ms/api/users/create-user?phone_number=$mobnum&name=$name";
+
+    try {
+      final response = await http.post(
+        Uri.parse(apiUrl),
+        headers: {"Content-Type": "application/json"},
+      );
+
+      if (response.statusCode == 201) {
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        await prefs.setString('name', name);
+        final responseData = jsonDecode(response.body);
+        if (responseData['userExists'] == false) {
+          // Proceed to send OTP
+          _sendOtp(mobnum);
+        } else {
+          // Handle server-side validation errors
+          _showErrorFlushbar(
+              responseData['message'] ?? "Failed to save user details");
+        }
+      } else {
+        _showErrorFlushbar("Error saving user details. Please try again.");
+      }
+    } catch (e) {
+      _showErrorFlushbar("An unexpected error occurred. Please try again.");
+    }
+  }
+
+  void _validateAndNavigate() {
+    // Check if both fields are filled and mobile number is 10 digits
+    String name = _nameController.text;
+    String mobile = _mobileController.text;
+
+    if (name.isEmpty) {
+      // Show error if name is empty
+      _showErrorFlushbar("Please enter your name");
+    } else if (mobile.isEmpty || mobile.length != 10) {
+      // Show error if mobile is not valid
+      _showErrorFlushbar("Please enter a valid 10-digit mobile number");
+    } else {
+      _saveUserDetails(name, mobile);
     }
   }
 
@@ -219,7 +268,6 @@ class _SignupScreenState extends State<SignupScreen> {
                       style: TextStyle(fontFamily: 'Outfit-Regular'),
                       keyboardType: TextInputType.name,
                       decoration: InputDecoration(
-                        prefixIconColor: const Color(0xFFFFA07A),
                         labelText: 'Enter Your Name',
                         prefixIcon: const Icon(Icons.person),
                         border: OutlineInputBorder(
@@ -256,14 +304,14 @@ class _SignupScreenState extends State<SignupScreen> {
                       height: 50,
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                          primary: Color(0xFFFAB2EF),
+                          backgroundColor: Color(0xFFFAB2EF),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),
                           ),
                         ),
                         onPressed: _validateAndNavigate,
                         child: const Text(
-                          "Get OTP",
+                          "Sign In",
                           style: TextStyle(
                             fontFamily: 'Outfit-Bold',
                             fontSize: 16,
@@ -288,7 +336,7 @@ class _SignupScreenState extends State<SignupScreen> {
                       height: 50,
                       child: ElevatedButton.icon(
                         style: ElevatedButton.styleFrom(
-                          primary: Color(0xFFFFFBFF),
+                          backgroundColor: Color(0xFFFFFBFF),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),
                           ),
@@ -311,7 +359,7 @@ class _SignupScreenState extends State<SignupScreen> {
                         ),
                       ),
                     ),
-                    const SizedBox(height: 20),
+                    const SizedBox(height: 10),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [

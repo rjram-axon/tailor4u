@@ -1,10 +1,35 @@
 import 'package:flutter/material.dart';
-import 'package:tailor4u/screens/sign_up.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:tailor4u/screens/login_screen.dart';
+import 'package:tailor4u/screens/main_screen.dart';
 
-import 'login_screen.dart';
-
-class WelcomeScreen extends StatelessWidget {
+class WelcomeScreen extends StatefulWidget {
   const WelcomeScreen({Key? key}) : super(key: key);
+
+  @override
+  _WelcomeScreenState createState() => _WelcomeScreenState();
+}
+
+class _WelcomeScreenState extends State<WelcomeScreen> {
+  @override
+  void initState() {
+    super.initState();
+    _checkLoginStatus();
+  }
+
+  // Method to check if the user is logged in
+  Future<void> _checkLoginStatus() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    bool? isLoggedIn = prefs.getBool('isLoggedIn'); // Check login status
+
+    // If the user is logged in, navigate to the main screen
+    if (isLoggedIn == true) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => MainPage()), // Replace with your main screen
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -86,7 +111,7 @@ class WelcomeScreen extends StatelessWidget {
                     height: 50,
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        primary: Color(0xFFFFFBFF),
+                        backgroundColor: Color(0xFFFFFBFF),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(15),
                         ),
@@ -95,7 +120,7 @@ class WelcomeScreen extends StatelessWidget {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => const SignupScreen(),
+                            builder: (context) => const MobileVerify(),
                           ),
                         );
                       },
@@ -114,19 +139,6 @@ class WelcomeScreen extends StatelessWidget {
             ),
           ),
         ],
-      ),
-    );
-  }
-}
-
-class NextScreen extends StatelessWidget {
-  const NextScreen({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: Text("Next Screen"),
       ),
     );
   }
