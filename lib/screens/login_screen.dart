@@ -83,9 +83,9 @@ class _MobileVerifyState extends State<MobileVerify> {
     if (mobile.isEmpty || mobile.length != 10) {
       _showErrorFlushbar("Please enter a valid 10-digit mobile number");
     } else {
-      bool exists = await _isExistingUser(mobile);
+      // bool exists = await _isExistingUser(mobile);
 
-      if (exists) {
+      // if (exists) {
         String phoneNumber = "+91$mobile"; // Adjust as per your country code
         _phoneAuth.sendOtp(
           phoneNumber: phoneNumber,
@@ -104,9 +104,9 @@ class _MobileVerifyState extends State<MobileVerify> {
             _showErrorFlushbar(error.message ?? "OTP verification failed");
           },
         );
-      } else {
-        _showSignUpDialog(mobile);
-      }
+      // } else {
+      //   _showSignUpDialog(mobile);
+      // }
     }
   }
 

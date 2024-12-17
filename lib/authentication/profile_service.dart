@@ -13,6 +13,8 @@ class ProfileService {
   // Global properties for name and profilePic
   String name = '';
   String profilePic = 'assets/item1.png'; // Default profile picture
+  String email = '';
+  String mobNum = '';
 
   // Fetch the processed mobile number
   Future<String?> getProcessedMobileNumber() async {
@@ -29,7 +31,8 @@ class ProfileService {
   Future<void> fetchProfileData(String mobNum) async {
     try {
       final response = await http.get(
-        Uri.parse('https://sxzhq34r-3000.inc1.devtunnels.ms/api/users/get-user?phone_number=$mobNum'),
+        Uri.parse(
+            'https://sxzhq34r-3000.inc1.devtunnels.ms/api/users/get-user?phone_number=$mobNum'),
       );
 
       if (response.statusCode == 200) {
@@ -42,6 +45,8 @@ class ProfileService {
             // Store user details globally
             name = user['name'] ?? 'Unknown Name';
             profilePic = user['profile_pic'] ?? 'assets/item1.png';
+            email = user['email'] ?? 'Unknown Email';
+            mobNum = user['phone_number'] ?? 'Invalid Num';
 
             print('Global Name: $name');
             print('Global Profile Picture: $profilePic');
@@ -60,6 +65,7 @@ class ProfileService {
       profilePic = 'assets/item1.png'; // Default profile picture
     }
   }
+
   // Save the name and profilePic to local storage
   Future<void> _saveToLocalStorage() async {
     final prefs = await SharedPreferences.getInstance();
@@ -72,5 +78,7 @@ class ProfileService {
     final prefs = await SharedPreferences.getInstance();
     name = prefs.getString('name') ?? 'Unknown Name';
     profilePic = prefs.getString('profilePic') ?? 'assets/item1.png';
+    email = prefs.getString('email') ?? 'Unkown Email';
+    mobNum = prefs.getString('mobNum') ?? 'Invalid Num';
   }
 }

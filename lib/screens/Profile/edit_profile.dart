@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tailor4u/authentication/profile_service.dart';
 
 class EditProfilePage extends StatefulWidget {
   @override
@@ -7,11 +8,32 @@ class EditProfilePage extends StatefulWidget {
 
 class _EditProfilePageState extends State<EditProfilePage> {
   String profilePic = 'assets/item1.png'; // Default image
+  String name = '';
+  String mobNum = '';
+  String email = '';
   bool isEditingMobile = false;
   bool isEditingEmail = false;
 
-  TextEditingController mobileController = TextEditingController(text: "+91 9876543210");
-  TextEditingController emailController = TextEditingController(text: "Example@gmail.com");
+  TextEditingController mobileController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    loadProfileData();
+  }
+
+  Future<void> loadProfileData() async {
+    final profileService = ProfileService();
+    await profileService.loadFromLocalStorage(); // Load from local storage
+    if (mounted) {
+      setState(() {
+        name = profileService.name; // Use data from local storage
+        mobNum = profileService.mobNum;
+        email = profileService.email;
+      });
+    }
+  }
 
   void _changeProfilePic() {
     setState(() {
@@ -64,17 +86,14 @@ class _EditProfilePageState extends State<EditProfilePage> {
                             child: CircleAvatar(
                               radius: 15,
                               backgroundColor: Colors.grey.shade300,
-                              child: Icon(Icons.edit, size: 18, color: Colors.black),
+                              child: Icon(Icons.edit,
+                                  size: 18, color: Colors.black),
                             ),
                           ),
                         ),
                       ],
                     ),
-                    SizedBox(height: 10),
-                    Text(
-                      'Test',
-                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                    ),
+                    
                   ],
                 ),
               ),
@@ -86,13 +105,18 @@ class _EditProfilePageState extends State<EditProfilePage> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     // First Name
-                    _buildTextField(label: "First Name"),
+                    _buildTextField(label: name),
                     SizedBox(height: 16),
 
                     // Last Name
                     _buildTextField(label: "Last Name"),
                     SizedBox(height: 16),
 
+                    _buildTextField(label: mobNum),
+                    SizedBox(height: 16),
+
+                    _buildTextField(label: "Email"),
+                    SizedBox(height: 16),
                     // Submit Button
                     Center(
                       child: ElevatedButton(
@@ -110,30 +134,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
                         ),
                       ),
                     ),
-                    SizedBox(height: 20),
-
-                    // Contact Info
-                    _buildEditableField(
-                      label: "Mobile Number",
-                      controller: mobileController,
-                      isEditing: isEditingMobile,
-                      onTap: () {
-                        setState(() {
-                          isEditingMobile = !isEditingMobile;
-                        });
-                      },
-                    ),
-                    SizedBox(height: 16),
-                    _buildEditableField(
-                      label: "Email Id",
-                      controller: emailController,
-                      isEditing: isEditingEmail,
-                      onTap: () {
-                        setState(() {
-                          isEditingEmail = !isEditingEmail;
-                        });
-                      },
-                    ),
                   ],
                 ),
               ),
@@ -149,22 +149,22 @@ class _EditProfilePageState extends State<EditProfilePage> {
       decoration: InputDecoration(
         labelText: label,
         floatingLabelStyle: TextStyle(
-        color: Colors.pink, // Color of the floating label
-        fontWeight: FontWeight.bold,
-      ),
+          color: Colors.pink, // Color of the floating label
+          fontWeight: FontWeight.bold,
+        ),
         filled: true,
         fillColor: Colors.grey.shade100, // Contrast color for text box
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
           borderSide: BorderSide.none, // No border
         ),
-         focusedBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(8),
-        borderSide: BorderSide(
-          color: Colors.pink, // Highlight color for selected border
-          width: 1,           // Border width when focused
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: BorderSide(
+            color: Colors.pink, // Highlight color for selected border
+            width: 1, // Border width when focused
+          ),
         ),
-      ),
         contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       ),
     );
@@ -196,21 +196,22 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 ? TextField(
                     controller: controller,
                     decoration: InputDecoration(
-                      hintText: label,
+                      hintText:
+                          controller.text.isEmpty ? label : controller.text,
                       border: InputBorder.none,
                       contentPadding: EdgeInsets.zero,
                     ),
                   )
                 : Text(
-                    controller.text,
+                    controller.text.isEmpty ? label : controller.text,
                     style: TextStyle(fontSize: 16),
                   ),
             trailing: GestureDetector(
               onTap: onTap,
               child: Text(
                 isEditing ? "Save" : "Update",
-                style: TextStyle(
-                    color: Colors.pink, fontWeight: FontWeight.bold),
+                style:
+                    TextStyle(color: Colors.pink, fontWeight: FontWeight.bold),
               ),
             ),
           ),

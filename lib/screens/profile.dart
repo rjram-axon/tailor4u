@@ -147,9 +147,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   ),
                   SizedBox(height: 10),
                   Text(
-                    name.isNotEmpty
-                        ? name
-                        : 'Loading...', // Use the fetched name
+                    name, // Use the fetched name
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
                 ],
