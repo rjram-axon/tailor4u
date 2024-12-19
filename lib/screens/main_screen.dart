@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:tailor4u/authentication/profile_service.dart';
 import 'package:tailor4u/screens/otp_screen.dart';
+import 'package:tailor4u/screens/product_details.dart';
 import 'package:tailor4u/screens/profile.dart';
 
 class MainPage extends StatefulWidget {
@@ -354,61 +355,74 @@ class _MainPageState extends State<MainPage> {
                               ),
                               itemCount: 6,
                               itemBuilder: (context, index) {
-                                return Card(
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Expanded(
-                                        child: Container(
-                                          color: Colors.grey[300],
-                                          // Placeholder for product image
-                                        ),
+                                return GestureDetector(
+                                  onTap: () {
+                                    // Navigate to the details page
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            ProductDetailsPage(),
                                       ),
-                                      Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              "BLOUSE",
-                                              style: TextStyle(
-                                                  fontWeight: FontWeight.bold),
-                                            ),
-                                            Row(
-                                              children: [
-                                                Text("₹1300",
+                                    );
+                                  },
+                                  child: Card(
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Expanded(
+                                          child: Container(
+                                            color: Colors.grey[300],
+                                            // Placeholder for product image
+                                          ),
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                "BLOUSE",
+                                                style: TextStyle(
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              ),
+                                              Row(
+                                                children: [
+                                                  Text("₹1300",
+                                                      style: TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.bold)),
+                                                  SizedBox(width: 8),
+                                                  Text(
+                                                    "₹1500",
                                                     style: TextStyle(
-                                                        fontWeight:
-                                                            FontWeight.bold)),
-                                                SizedBox(width: 8),
-                                                Text(
-                                                  "₹1500",
-                                                  style: TextStyle(
-                                                    color: Colors.grey,
-                                                    decoration: TextDecoration
-                                                        .lineThrough,
+                                                      color: Colors.grey,
+                                                      decoration: TextDecoration
+                                                          .lineThrough,
+                                                    ),
                                                   ),
-                                                ),
-                                              ],
-                                            ),
-                                            Row(
-                                              children: [
-                                                Icon(Icons.star,
-                                                    color: Colors.pink,
-                                                    size: 16),
-                                                SizedBox(width: 4),
-                                                Text("4.0"),
-                                              ],
-                                            ),
-                                          ],
+                                                ],
+                                              ),
+                                              Row(
+                                                children: [
+                                                  Icon(Icons.star,
+                                                      color: Colors.pink,
+                                                      size: 16),
+                                                  SizedBox(width: 4),
+                                                  Text("4.0"),
+                                                ],
+                                              ),
+                                            ],
+                                          ),
                                         ),
-                                      ),
-                                    ],
+                                      ],
+                                    ),
                                   ),
                                 );
                               },
