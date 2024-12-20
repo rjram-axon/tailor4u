@@ -4,7 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tailor4u/authentication/profile_service.dart';
 import 'package:tailor4u/screens/Profile/edit_profile.dart';
+import 'package:tailor4u/screens/Profile/help_center.dart';
+import 'package:tailor4u/screens/Profile/invite_friends.dart';
+import 'package:tailor4u/screens/Profile/payment_method.dart';
+import 'package:tailor4u/screens/Profile/privacy_policy.dart';
 import 'package:tailor4u/screens/Profile/saved.address.dart';
+import 'package:tailor4u/screens/Profile/settings.dart';
 import 'package:tailor4u/screens/login_screen.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -59,6 +64,46 @@ class _ProfilePageState extends State<ProfilePage> {
         MaterialPageRoute(
             builder: (context) =>
                 MobileVerify()), // Navigate to the Login screen
+      );
+    }
+    if (route == 'payment_method') {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+            builder: (context) =>
+                PaymentOptionsPage()), // Navigate to the Login screen
+      );
+    }
+    if (route == 'settings') {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+            builder: (context) =>
+                SettingsPage()), // Navigate to the Login screen
+      );
+    }
+    if (route == 'help_center') {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+            builder: (context) =>
+                HelpCenterPage()), // Navigate to the Login screen
+      );
+    }
+    if (route == 'privacy_policy') {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+            builder: (context) =>
+                PrivacyPolicyPage()), // Navigate to the Login screen
+      );
+    }
+    if (route == 'invite_friends') {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+            builder: (context) =>
+                InviteFriendsPage()), // Navigate to the Login screen
       );
     }
   }
