@@ -3,9 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart'
     as carousel_slider; // Import carousel_slider package
 import 'package:flutter/services.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:tailor4u/authentication/profile_service.dart';
-import 'package:tailor4u/screens/otp_screen.dart';
+import 'package:tailor4u/screens/categorydetails.dart';
+import 'package:tailor4u/screens/orderdetails.dart';
 import 'package:tailor4u/screens/product_details.dart';
 import 'package:tailor4u/screens/profile.dart';
 
@@ -29,6 +31,19 @@ class _MainPageState extends State<MainPage> {
   String profilePic = 'assets/item1.png'; // Default profile pic
   final ProfileService _profileService = ProfileService();
   String name = '';
+  String selectedSortOption = 'Price: Low to High';
+
+  void sortItems() {
+    if (selectedSortOption == 'Price: Low to High') {
+      // Implement sorting logic for price low to high
+    } else if (selectedSortOption == 'Price: High to Low') {
+      // Implement sorting logic for price high to low
+    } else if (selectedSortOption == 'Newest') {
+      // Implement sorting logic for newest items
+    } else if (selectedSortOption == 'Popularity') {
+      // Implement sorting logic for popularity
+    }
+  }
 
   Future<void> _fetchProfile() async {
     // Get the mobile number from UserService
@@ -74,6 +89,54 @@ class _MainPageState extends State<MainPage> {
         const SnackBar(content: Text("Swipe again to exit the app")),
       );
     }
+  }
+
+  void _showBottomDropdown(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true, // Makes the sheet height flexible
+      builder: (BuildContext context) {
+        return Container(
+          padding: EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: Color(0xFFF8E1F4), // Soft lavender background
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(20),
+              topRight: Radius.circular(20),
+            ),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              ...[
+                'Price: Low to High',
+                'Price: High to Low',
+                'Newest',
+                'Popularity'
+              ].map((option) {
+                return ListTile(
+                  title: Text(
+                    option,
+                    style: TextStyle(
+                      fontFamily: 'Outfit-Regular',
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                      color: Color(0xFFBE359C),
+                    ),
+                  ),
+                  onTap: () {
+                    setState(() {
+                      selectedSortOption = option; // Update the selected option
+                    });
+                    Navigator.pop(context); // Close the bottom sheet
+                  },
+                );
+              }).toList(),
+            ],
+          ),
+        );
+      },
+    );
   }
 
   @override
@@ -234,112 +297,264 @@ class _MainPageState extends State<MainPage> {
                                 ),
                               ),
                             ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text("Category",
-                                    style: TextStyle(
-                                        fontFamily: 'Outfit-Regular',
-                                        fontWeight: FontWeight.bold)),
-                                TextButton(
-                                  onPressed: () {
-                                    // Add your onPressed logic here
-                                  },
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
+                            SizedBox(height: 15),
+                            Container(
+                              padding: EdgeInsets.all(
+                                  16), // Add padding to the container for spacing
+                              decoration: BoxDecoration(
+                                color: Color(
+                                    0xFFFFC0F7), // Light pink background shade
+                                borderRadius: BorderRadius.circular(
+                                    8), // Optional: to give rounded corners
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
                                     children: [
                                       Text(
-                                        "See all",
+                                        "Category",
                                         style: TextStyle(
-                                            fontFamily: 'Outfit-Regular',
-                                            color: Colors.black),
+                                          fontFamily: 'Outfit-Regular',
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors
+                                              .pink, // Highlighting the category title
+                                        ),
                                       ),
-                                      SizedBox(
-                                          width:
-                                              4), // Add some spacing between text and icon
-                                      Icon(
-                                        Icons
-                                            .arrow_forward_ios, // Right arrow icon
-                                        color: Colors.black,
-                                        size: 12, // Adjust the size as needed
+                                      TextButton(
+                                        onPressed: () {
+                                          // Add your onPressed logic here
+                                        },
+                                        child: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Text(
+                                              "See all",
+                                              style: TextStyle(
+                                                  fontFamily: 'Outfit-Regular',
+                                                  color: Colors.black),
+                                            ),
+                                            SizedBox(
+                                                width:
+                                                    4), // Add some spacing between text and icon
+                                            Icon(
+                                              Icons
+                                                  .arrow_forward_ios, // Right arrow icon
+                                              color: Colors.black,
+                                              size:
+                                                  12, // Adjust the size as needed
+                                            ),
+                                          ],
+                                        ),
                                       ),
                                     ],
                                   ),
-                                ),
-                              ],
+                                  SizedBox(height: 16),
+                                  // Space below Category section
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      // Small images in a row
+                                      Image.asset(
+                                        'assets/item1.png', // Replace with your image paths
+                                        width: 65,
+                                        height: 60,
+                                        fit: BoxFit.cover,
+                                      ),
+                                      SizedBox(width: 11),
+                                      Image.asset(
+                                        'assets/item2.png', // Replace with your image paths
+                                        width: 65,
+                                        height: 60,
+                                        fit: BoxFit.cover,
+                                      ),
+                                      SizedBox(width: 11),
+                                      Image.asset(
+                                        'assets/Signup.png', // Replace with your image paths
+                                        width: 65,
+                                        height: 60,
+                                        fit: BoxFit.cover,
+                                      ),
+                                      SizedBox(width: 11),
+                                      Image.asset(
+                                        'assets/OTP.png', // Replace with your image paths
+                                        width: 65,
+                                        height: 60,
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
                             ),
                             SizedBox(height: 16),
                             // Filters
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
-                                FilterChip(
-                                  label: Text(
-                                    "All",
-                                    style: TextStyle(
-                                        fontFamily: 'Outfit-Regular',
-                                        color: Colors
-                                            .black), // Text color when selected
-                                  ),
-                                  selected: true, // Selected state
-                                  onSelected: (selected) {},
-                                  backgroundColor: Colors.grey
-                                      .shade300, // Default background color
-                                  selectedColor: Color(
-                                      0xFFFAB2EF), // Background color when selected
-                                  shape: RoundedRectangleBorder(
+                                // Sort Button (Trigger Bottom Modal Sheet)
+                                Container(
+                                  decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(
-                                        10), // Rounded corners
+                                        15), // Rounded corners
+                                    color: Color(
+                                        0xFFF8E1F4), // Background color for the button
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black
+                                            .withOpacity(0.2), // Shadow effect
+                                        blurRadius: 6, // Subtle blur effect
+                                        offset: Offset(2, 2), // Shadow position
+                                      ),
+                                    ],
                                   ),
-                                  elevation: 4, // Shadow effect
-                                  pressElevation: 8, // Elevation on press
+                                  child: TextButton(
+                                    onPressed: () {
+                                      // Show Bottom Modal Sheet for Sorting
+                                      showModalBottomSheet(
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          return Container(
+                                            height: 300,
+                                            padding: EdgeInsets.all(16),
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  "Sort By",
+                                                  style: TextStyle(
+                                                    fontSize: 20,
+                                                    fontWeight: FontWeight.bold,
+                                                    color: Colors.pink,
+                                                  ),
+                                                ),
+                                                ListTile(
+                                                  title: Text(
+                                                      "Price: Low to High"),
+                                                  onTap: () {
+                                                    setState(() {
+                                                      selectedSortOption =
+                                                          'Price: Low to High';
+                                                    });
+                                                    Navigator.pop(context);
+                                                    sortItems();
+                                                  },
+                                                ),
+                                                ListTile(
+                                                  title: Text(
+                                                      "Price: High to Low"),
+                                                  onTap: () {
+                                                    setState(() {
+                                                      selectedSortOption =
+                                                          'Price: High to Low';
+                                                    });
+                                                    Navigator.pop(context);
+                                                    sortItems();
+                                                  },
+                                                ),
+                                                ListTile(
+                                                  title: Text("Newest"),
+                                                  onTap: () {
+                                                    setState(() {
+                                                      selectedSortOption =
+                                                          'Newest';
+                                                    });
+                                                    Navigator.pop(context);
+                                                    sortItems();
+                                                  },
+                                                ),
+                                                ListTile(
+                                                  title: Text("Popularity"),
+                                                  onTap: () {
+                                                    setState(() {
+                                                      selectedSortOption =
+                                                          'Popularity';
+                                                    });
+                                                    Navigator.pop(context);
+                                                    sortItems();
+                                                  },
+                                                ),
+                                              ],
+                                            ),
+                                          );
+                                        },
+                                      );
+                                    },
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Icon(
+                                          FontAwesomeIcons
+                                              .sliders, // Icon on the left
+                                          size: 17.0, // Customize size
+                                          color:
+                                              Colors.black, // Customize color
+                                        ),
+                                        SizedBox(
+                                            width:
+                                                4), // Add some spacing between icon and text
+                                        Text(
+                                          selectedSortOption.isEmpty
+                                              ? "Sort By"
+                                              : selectedSortOption, // Show selected option or default text
+                                          style: TextStyle(
+                                            fontFamily: 'Outfit-Regular',
+                                            color: Colors.black,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
                                 ),
-                                FilterChip(
-                                  label: Text(
-                                    "New collection",
-                                    style: TextStyle(
-                                        fontFamily: "Outfit-Regular",
-                                        color: Colors
-                                            .black), // Text color when not selected
-                                  ),
-                                  selected: false, // Selected state
-                                  onSelected: (selected) {},
-                                  backgroundColor: Colors.grey
-                                      .shade300, // Default background color
-                                  selectedColor: Color(
-                                      0xFFFAB2EF), // Background color when selected
-                                  shape: RoundedRectangleBorder(
+                                // Filter Button with the same theme as Sort
+                                Container(
+                                  decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(
-                                        10), // Rounded corners
+                                        15), // Rounded corners
+                                    color: Color(
+                                        0xFFF8E1F4), // Background color for the button
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black
+                                            .withOpacity(0.2), // Shadow effect
+                                        blurRadius: 6, // Subtle blur effect
+                                        offset: Offset(2, 2), // Shadow position
+                                      ),
+                                    ],
                                   ),
-                                  elevation: 2, // Shadow effect
-                                  pressElevation: 4, // Elevation on press
-                                ),
-                                FilterChip(
-                                  label: Text(
-                                    "Trending",
-                                    style: TextStyle(
-                                        fontFamily: 'Outfit-Regular',
-                                        color: Colors
-                                            .black), // Text color when not selected
+                                  child: TextButton(
+                                    onPressed: () {
+                                      // Implement filter logic here
+                                    },
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Icon(
+                                          FontAwesomeIcons
+                                              .filter, // Filter icon
+                                          size: 17.0, // Customize size
+                                          color:
+                                              Colors.black, // Customize color
+                                        ),
+                                        SizedBox(
+                                            width:
+                                                4), // Add some spacing between icon and text
+                                        Text(
+                                          "Filter", // Text for the button
+                                          style: TextStyle(
+                                            fontFamily: 'Outfit-Regular',
+                                            color: Colors.black,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                  selected: false, // Selected state
-                                  onSelected: (selected) {},
-                                  backgroundColor: Colors.grey
-                                      .shade300, // Default background color
-                                  selectedColor: Color(
-                                      0xFFFAB2EF), // Background color when selected
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(
-                                        10), // Rounded corners
-                                  ),
-                                  elevation: 2, // Shadow effect
-                                  pressElevation: 4, // Elevation on press
                                 ),
                               ],
                             ),
-                            SizedBox(height: 16),
-                            // Carousel with adjusted properties
                             SizedBox(height: 16),
                             // Products Grid
                             GridView.builder(
@@ -459,9 +674,19 @@ class _MainPageState extends State<MainPage> {
                         _buildNavBarItem(
                             Icons.home, "Home", Colors.pink, () {}),
                         _buildNavBarItem(
-                            Icons.shopping_bag, "Orders", Colors.grey, () {}),
+                            Icons.shopping_bag, "Orders", Colors.grey, () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => OrderDetailsPage()),
+                          );
+                        }),
                         _buildNavBarItem(
-                            Icons.grid_view, "Categories", Colors.grey, () {}),
+                            Icons.grid_view, "Categories", Colors.grey, () {Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => CategoryPage()),
+                          );}),
                         _buildNavBarItem(Icons.person, "Profile", Colors.grey,
                             _navigateToProfile),
                       ],
