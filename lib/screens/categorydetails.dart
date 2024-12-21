@@ -6,14 +6,14 @@ class CategoryPage extends StatefulWidget {
 }
 
 class _CategoryPageState extends State<CategoryPage> {
-  // Sample list of categories
-  List<String> categories = [
-    "Electronics",
-    "Fashion",
-    "Home Appliances",
-    "Books",
-    "Toys",
-    "Groceries"
+  // Sample list of stitchable women's clothing categories with corresponding images
+  List<Map<String, String>> categories = [
+    {"name": "Dresses", "image": "assets/item1.png"},
+    {"name": "Tops & Blouses", "image": "assets/item2.png"},
+    {"name": "Skirts & Pants", "image": "assets/OTP.png"},
+    {"name": "Kurtis & Tunics", "image": "assets/Signup.png"},
+    {"name": "Sarees", "image": "assets/OTP.png"},
+    {"name": "Lehengas", "image": "assets/Signup.png"},
   ];
 
   // Sample function to navigate to category details (can be expanded)
@@ -42,26 +42,27 @@ class _CategoryPageState extends State<CategoryPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Categories"),
-        backgroundColor: Colors.pink,
+        title: Text("Categories",style: TextStyle(color: Colors.white, fontFamily: 'Outfit-Regular')),
+        backgroundColor: Color(0xFFBE359C),
+        iconTheme: IconThemeData(color: Colors.white),
       ),
       body: Padding(
         padding: EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              "Browse Categories",
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                color: Colors.pink,
-              ),
-            ),
+            
             SizedBox(height: 16),
-            // Category List
+            // Category List in GridView
             Expanded(
-              child: ListView.builder(
+              child: GridView.builder(
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2, // 2 items per row
+                  crossAxisSpacing: 16.0, // Space between cards horizontally
+                  mainAxisSpacing: 16.0, // Space between cards vertically
+                  childAspectRatio:
+                      0.75, // Aspect ratio of the card (width/height)
+                ),
                 itemCount: categories.length,
                 itemBuilder: (context, index) {
                   return Card(
@@ -70,18 +71,33 @@ class _CategoryPageState extends State<CategoryPage> {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    child: ListTile(
-                      onTap: () => navigateToCategory(categories[index]),
-                      title: Text(
-                        categories[index],
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      trailing: Icon(
-                        Icons.arrow_forward_ios,
-                        size: 16,
+                    child: InkWell(
+                      onTap: () =>
+                          navigateToCategory(categories[index]["name"]!),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(8),
+                            child: Image.asset(
+                              categories[index]["image"]!,
+                              width: double.infinity,
+                              height: 120,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(
+                              categories[index]["name"]!,
+                              style: TextStyle(
+                                fontFamily: 'Outfit-Regular',
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   );

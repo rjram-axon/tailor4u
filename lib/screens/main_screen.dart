@@ -33,6 +33,14 @@ class _MainPageState extends State<MainPage> {
   String name = '';
   String selectedSortOption = 'Price: Low to High';
 
+  int cartItemCount = 0; // To track cart items count
+
+  void updateCartCount(int count) {
+    setState(() {
+      cartItemCount = count;
+    });
+  }
+
   void sortItems() {
     if (selectedSortOption == 'Price: Low to High') {
       // Implement sorting logic for price low to high
@@ -169,6 +177,7 @@ class _MainPageState extends State<MainPage> {
               _handleSwipe();
             }
           },
+          
           child: Stack(
             children: [
               Column(
@@ -226,7 +235,7 @@ class _MainPageState extends State<MainPage> {
                       padding: const EdgeInsets.only(
                           bottom: 80), // Prevent content overlap
                       child: Padding(
-                        padding: const EdgeInsets.all(12.0),
+                        padding: const EdgeInsets.all(1.0),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -682,11 +691,13 @@ class _MainPageState extends State<MainPage> {
                           );
                         }),
                         _buildNavBarItem(
-                            Icons.grid_view, "Categories", Colors.grey, () {Navigator.push(
+                            Icons.grid_view, "Categories", Colors.grey, () {
+                          Navigator.push(
                             context,
                             MaterialPageRoute(
                                 builder: (context) => CategoryPage()),
-                          );}),
+                          );
+                        }),
                         _buildNavBarItem(Icons.person, "Profile", Colors.grey,
                             _navigateToProfile),
                       ],
@@ -696,7 +707,9 @@ class _MainPageState extends State<MainPage> {
               ),
             ],
           ),
+          
         ),
+      
       ),
     );
   }

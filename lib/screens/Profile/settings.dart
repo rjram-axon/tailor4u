@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class SettingsPage extends StatefulWidget {
   @override
@@ -6,134 +7,117 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
-  // Track whether the user has enabled notifications
   bool notificationsEnabled = true;
-
-  // Track whether dark theme is enabled
   bool darkThemeEnabled = false;
 
-  // Track selected language
-  String selectedLanguage = 'English';
-
-  // Function to change the theme
-  void toggleTheme(bool value) {
-    setState(() {
-      darkThemeEnabled = value;
-    });
-  }
-
-  // Function to change the language
-  void changeLanguage(String value) {
-    setState(() {
-      selectedLanguage = value;
-    });
-  }
-
-  // Function to toggle notifications
   void toggleNotifications(bool value) {
     setState(() {
       notificationsEnabled = value;
     });
   }
 
+  void toggleTheme(bool value) {
+    setState(() {
+      darkThemeEnabled = value;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    bool darkThemeEnabled = Provider.of<ThemeNotifier>(context).isDarkTheme;
+
     return Scaffold(
       appBar: AppBar(
-        title: Text("Settings"),
-        backgroundColor: Colors.pink,
+        title: Text("Settings", style: TextStyle(color: Colors.white)),
+        backgroundColor: Color(0xFFBE359C),
+        iconTheme: IconThemeData(color: Colors.white),
       ),
       body: Padding(
         padding: EdgeInsets.all(16),
         child: ListView(
           children: [
-            // Notifications Setting
+            // Notifications Setting with customized switch
             ListTile(
               title: Text("Notifications"),
               trailing: Switch(
                 value: notificationsEnabled,
                 onChanged: toggleNotifications,
+                activeColor: Color(0xFFBE359C),
+                inactiveThumbColor: Colors.white,
+                inactiveTrackColor: Colors.grey[400],
+                activeTrackColor: Color(0xFFBE359C).withOpacity(0.3),
               ),
             ),
             Divider(),
 
-            // Theme Setting
+            // Dark Theme Setting with customized switch
             ListTile(
               title: Text("Dark Theme"),
               trailing: Switch(
                 value: darkThemeEnabled,
-                onChanged: toggleTheme,
+                onChanged: (value) {
+                  // When the switch is toggled, update the theme
+                  Provider.of<ThemeNotifier>(context, listen: false)
+                      .toggleTheme();
+                },
+                activeColor: Color(0xFFBE359C),
+                inactiveThumbColor: Colors.white,
+                inactiveTrackColor: Colors.grey[400],
+                activeTrackColor: Color(0xFFBE359C).withOpacity(0.3),
               ),
             ),
             Divider(),
 
-            // Language Setting
+            // Change Password Section
             ListTile(
-              title: Text("Language"),
-              subtitle: Text(selectedLanguage),
+              title: Text("Change Password"),
+              leading: Icon(Icons.lock, color: Color(0xFFBE359C)),
               onTap: () {
-                // Show a simple dialog to choose a language
-                showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return AlertDialog(
-                      title: Text("Choose Language"),
-                      content: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          ListTile(
-                            title: Text("English"),
-                            onTap: () {
-                              changeLanguage("English");
-                              Navigator.pop(context);
-                            },
-                          ),
-                          ListTile(
-                            title: Text("Spanish"),
-                            onTap: () {
-                              changeLanguage("Spanish");
-                              Navigator.pop(context);
-                            },
-                          ),
-                          ListTile(
-                            title: Text("French"),
-                            onTap: () {
-                              changeLanguage("French");
-                              Navigator.pop(context);
-                            },
-                          ),
-                        ],
-                      ),
-                    );
-                  },
-                );
+                // Navigate to change password page
               },
             ),
             Divider(),
 
-            // Account Settings Section
+            // Log Out Section
             ListTile(
-              title: Text("Account Settings"),
-              trailing: Icon(Icons.arrow_forward_ios),
+              title: Text("Send Feedback"),
+              leading: Icon(Icons.feedback, color: Color(0xFFBE359C)),
               onTap: () {
-                // Navigate to account settings page
-                // Navigator.push(context, MaterialPageRoute(builder: (context) => AccountSettingsPage()));
+                // Navigate to a feedback form or open email client
+                // Example: open email client with a pre-filled feedback subject
+              },
+            ),
+
+            Divider(),
+
+            // App Version Information
+            ListTile(
+              title: Text("App Version"),
+              subtitle: Text("1.0.0"), // Dynamically fetched version
+              leading: Icon(Icons.info, color: Color(0xFFBE359C)),
+              onTap: () {
+                // Optionally navigate to version details page
               },
             ),
             Divider(),
-
-            // About Section
-            ListTile(
-              title: Text("About"),
-              trailing: Icon(Icons.info_outline),
-              onTap: () {
-                // Navigate to about page
-                // Navigator.push(context, MaterialPageRoute(builder: (context) => AboutPage()));
-              },
-            ),
           ],
         ),
       ),
     );
+  }
+}
+
+class ThemeNotifier extends ChangeNotifier {
+  bool _isDarkTheme;
+
+  // Constructor to set the initial theme based on system settings
+  ThemeNotifier(this._isDarkTheme);
+
+  bool get isDarkTheme => _isDarkTheme;
+
+  // Method to toggle the theme
+  void toggleTheme() {
+    _isDarkTheme = !_isDarkTheme;
+    notifyListeners();
   }
 }

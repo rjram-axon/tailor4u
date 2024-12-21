@@ -111,3 +111,16 @@ class CartItem {
 
   CartItem({required this.name, required this.price});
 }
+class CartModel extends ChangeNotifier {
+  List<String> _cartItems = [];
+
+  List<String> get cartItems => _cartItems;
+
+  void addToCart(String product) {
+    _cartItems.add(product);
+    notifyListeners();
+  }
+
+  bool get isCartEmpty => _cartItems.isEmpty;
+}
+
