@@ -10,16 +10,16 @@ void main() async {
   await Firebase.initializeApp(); // Initializes Firebase
   await SharedPreferencesUtil.init(); // Initializes SharedPreferences
 
-  // Get the system's current theme (light or dark)
-  bool isDarkMode = WidgetsBinding.instance.window.platformBrightness == Brightness.dark;
+  // Load the user's saved theme preference
+  String initialTheme = await ThemeNotifier.loadThemePreference();
 
-  runApp(MyApp(isDarkMode)); // Pass the system theme to MyApp
+  runApp(MyApp(initialTheme)); // Pass the loaded theme to MyApp
 }
 
 class MyApp extends StatelessWidget {
-  final bool initialTheme;
+  final String initialTheme;
 
-  // Constructor to pass the initial theme based on system settings
+  // Constructor to pass the initial theme based on user preference or system default
   MyApp(this.initialTheme);
 
   @override
@@ -31,7 +31,7 @@ class MyApp extends StatelessWidget {
           return MaterialApp(
             debugShowCheckedModeBanner: false, // Remove the debug tag
             title: "Tailor4U",
-            theme: themeNotifier.isDarkTheme ? ThemeData.dark() : ThemeData.light(),
+            theme: themeNotifier.themeData, // Apply the theme based on user selection
             home: WelcomeScreen(),
           );
         },

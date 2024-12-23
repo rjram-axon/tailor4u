@@ -2,6 +2,7 @@ import 'package:another_flushbar/flushbar.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:tailor4u/screens/cart.dart';
+import 'package:tailor4u/sections/app_theme.dart';
 
 class ProductDetailsPage extends StatefulWidget {
   const ProductDetailsPage({super.key});
@@ -81,6 +82,12 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
 
   @override
   Widget build(BuildContext context) {
+    bool isDarkTheme = Theme.of(context).brightness == Brightness.dark;
+    Color backgroundColor = isDarkTheme
+        ? AppTheme.darkBackgroundColor
+        : AppTheme.lightBackgroundColor;
+    Color textColor =
+        isDarkTheme ? AppTheme.darkTextColor : AppTheme.lightTextColor;
     return Scaffold(
       appBar: null,
       body: Padding(
@@ -97,11 +104,11 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                     CarouselSlider.builder(
                       itemCount: _imagePaths.length,
                       options: CarouselOptions(
-                        height: 250,
+                        height: 350,
                         autoPlay: false,
                         enlargeCenterPage: true,
                         enableInfiniteScroll: true,
-                        viewportFraction: 0.8,
+                        viewportFraction: 1,
                         onPageChanged: (index, reason) {
                           setState(() {
                             _currentIndex = index;
@@ -115,7 +122,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                           child: Image.asset(
                             _imagePaths[index],
                             height: 250,
-                            width: 250,
+                            width: 400,
                             fit: BoxFit.cover,
                           ),
                         );
@@ -148,8 +155,8 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                             gradient: LinearGradient(
                               colors: isActive
                                   ? [
-                                      const Color(0xFFBE359C),
-                                      Colors.pink.shade200
+                                      AppTheme.primaryColor,
+                                      AppTheme.secondaryColor
                                     ]
                                   : [
                                       Colors.grey.shade300,
@@ -183,7 +190,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                             // Show size chart modal or navigate to size chart page
                           },
                           style: TextButton.styleFrom(
-                            foregroundColor: Color(0xFFD597CD),
+                            foregroundColor: AppTheme.secondaryColor,
                             textStyle: TextStyle(
                                 fontFamily: 'Outfit-Regular',
                                 fontSize: 16,
@@ -213,7 +220,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                           style: ElevatedButton.styleFrom(
                             padding: const EdgeInsets.symmetric(
                                 vertical: 10, horizontal: 20),
-                            backgroundColor: const Color(0xFFBE359C),
+                            backgroundColor: AppTheme.primaryColor,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(30),
                             ),
@@ -270,7 +277,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                   onPressed: () {
                     Navigator.pop(context);
                   },
-                  backgroundColor: Color(0xFFBE359C),
+                  backgroundColor: AppTheme.primaryColor,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(30),
                   ),
@@ -297,7 +304,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                                   CartPage()), // Replace with your CartPage widget
                         );
                       },
-                      backgroundColor: Color(0xFFBE359C),
+                      backgroundColor: AppTheme.primaryColor,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(30),
                       ),
@@ -345,14 +352,18 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
                   color:
-                      Colors.white, // Background color for the bottom section
+                      backgroundColor, // Background color for the bottom section
                   borderRadius: const BorderRadius.only(
                     topLeft: Radius.circular(30),
                     topRight: Radius.circular(30),
                   ),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.grey.shade300,
+                      color: Theme.of(context).brightness == Brightness.dark
+                          ? Colors.black
+                              .withOpacity(0.4) // Dark shadow for dark theme
+                          : Colors.grey.shade300
+                              .withOpacity(0.7), // Light shadow for light theme
                       blurRadius: 10,
                       spreadRadius: 5,
                     ),
@@ -402,7 +413,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                         style: ElevatedButton.styleFrom(
                           padding: const EdgeInsets.symmetric(
                               vertical: 8, horizontal: 8),
-                          backgroundColor: const Color(0xFFBE359C),
+                          backgroundColor: AppTheme.primaryColor,
                           disabledForegroundColor:
                               Colors.grey.withOpacity(0.38),
                           disabledBackgroundColor:
@@ -410,7 +421,11 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(30),
                           ),
-                          shadowColor: Colors.grey.shade300,
+                          shadowColor: Theme.of(context).brightness == Brightness.dark
+                          ? Colors.black
+                              .withOpacity(0.4) // Dark shadow for dark theme
+                          : Colors.grey.shade300
+                              .withOpacity(0.7), 
                           elevation: 10, // For the disabled state
                         ),
                         onPressed: () {
@@ -483,12 +498,12 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
         style: ElevatedButton.styleFrom(
           padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
           backgroundColor: _selectedSize == size
-              ? Color(0xFFBE359C)
+              ? AppTheme.primaryColor
               : Colors.transparent, // Highlight selected size
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(50),
             side: BorderSide(
-              color: Color(0xFFBE359C),
+              color: Color(0xFF49225B),
               width: 2,
             ),
           ),
@@ -502,7 +517,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
             fontWeight: FontWeight.w500,
             color: _selectedSize == size
                 ? Colors.white
-                : Color(0xFFBE359C), // Match text color with background
+                : Color(0xFF49225B), // Match text color with background
           ),
         ),
       ),
@@ -511,15 +526,21 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
 
   // Section Title Widget
   Widget _sectionTitle(String title) {
+    bool isDarkTheme = Theme.of(context).brightness == Brightness.dark;
+    Color backgroundColor = isDarkTheme
+        ? AppTheme.darkBackgroundColor
+        : AppTheme.lightBackgroundColor;
+    Color textColor =
+        isDarkTheme ? AppTheme.darkTextColor : AppTheme.lightTextColor;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: Text(
         title,
-        style: const TextStyle(
+        style: TextStyle(
             fontFamily: 'Outfit-Regular',
             fontWeight: FontWeight.bold,
             fontSize: 18,
-            color: Colors.black87),
+            color: textColor),
       ),
     );
   }
@@ -541,7 +562,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
           height: 70,
           decoration: BoxDecoration(
             border: Border.all(
-              color: isActive ? const Color(0xFFBE359C) : Colors.grey.shade300,
+              color: isActive ? AppTheme.primaryColor : Colors.grey.shade300,
               width: isActive ? 3 : 1, // Thicker border if active
             ),
             borderRadius: BorderRadius.circular(16),

@@ -11,6 +11,7 @@ import 'package:tailor4u/screens/Profile/privacy_policy.dart';
 import 'package:tailor4u/screens/Profile/saved.address.dart';
 import 'package:tailor4u/screens/Profile/settings.dart';
 import 'package:tailor4u/screens/login_screen.dart';
+import 'package:tailor4u/sections/app_theme.dart';
 
 class ProfilePage extends StatefulWidget {
   @override
@@ -21,6 +22,7 @@ class _ProfilePageState extends State<ProfilePage> {
   String profilePic = 'assets/item1.png'; // Default image
   String name = '';
   ProfileService profileService = ProfileService();
+  
 
   @override
   void initState() {
@@ -152,6 +154,12 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
+     bool isDarkTheme = Theme.of(context).brightness == Brightness.dark;
+    Color backgroundColor = isDarkTheme
+        ? AppTheme.darkBackgroundColor
+        : AppTheme.lightBackgroundColor;
+    Color textColor =
+        isDarkTheme ? AppTheme.darkTextColor : AppTheme.lightTextColor;
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color(0xFFFAB2EF),
@@ -193,7 +201,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   SizedBox(height: 10),
                   Text(
                     name, // Use the fetched name
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    style: TextStyle(color: backgroundColor, fontSize: 20, fontWeight: FontWeight.bold),
                   ),
                 ],
               ),
@@ -203,7 +211,7 @@ class _ProfilePageState extends State<ProfilePage> {
             Expanded(
               child: Container(
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: backgroundColor,
                   borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(30),
                     topRight: Radius.circular(30),
@@ -266,13 +274,19 @@ class _ProfilePageState extends State<ProfilePage> {
       {required IconData icon,
       required String title,
       required VoidCallback onTap}) {
+        bool isDarkTheme = Theme.of(context).brightness == Brightness.dark;
+    Color backgroundColor = isDarkTheme
+        ? AppTheme.darkBackgroundColor
+        : AppTheme.lightBackgroundColor;
+    Color textColor =
+        isDarkTheme ? AppTheme.darkTextColor : AppTheme.lightTextColor;
     return ListTile(
-      leading: Icon(icon, color: Colors.black),
+      leading: Icon(icon, color: textColor),
       title: Text(
         title,
         style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
       ),
-      trailing: Icon(Icons.arrow_forward_ios, size: 16, color: Colors.black),
+      trailing: Icon(Icons.arrow_forward_ios, size: 16, color: textColor),
       onTap: onTap,
     );
   }
