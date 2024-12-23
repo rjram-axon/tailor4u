@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tailor4u/sections/app_theme.dart';
 
 class PaymentOptionsPage extends StatefulWidget {
   @override
@@ -63,7 +64,7 @@ class _PaymentOptionsPageState extends State<PaymentOptionsPage> {
           "Payment Options",
           style: TextStyle(color: Colors.white, fontFamily: 'Outfit-Regular'),
         ),
-        backgroundColor: Color(0xFFBE359C),
+        backgroundColor: AppTheme.primaryColor,
         iconTheme: IconThemeData(color: Colors.white),
       ),
       body: Container(
@@ -95,7 +96,7 @@ class _PaymentOptionsPageState extends State<PaymentOptionsPage> {
                           leading: Icon(
                             paymentMethods[index]["icon"],
                             size: 32,
-                            color: Color(0xFFBE359C),
+                            color: AppTheme.primaryColor,
                           ),
                           title: Text(
                             paymentMethods[index]["name"],

@@ -1,15 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:tailor4u/sections/app_theme.dart';
 
 class InviteFriendsPage extends StatelessWidget {
-  final String referralCode = "XYZ123"; // Example referral code, you can generate it dynamically.
+  final String referralCode =
+      "XYZ123"; // Example referral code, you can generate it dynamically.
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Invite Friends"),
-        backgroundColor: Colors.pink,
+        title: Text(
+          "Invite Friends",
+          style: TextStyle(color: Colors.white, fontFamily: 'Outfit-Regular'),
+        ),
+        backgroundColor: AppTheme.primaryColor,
+        iconTheme: IconThemeData(color: Colors.white),
       ),
       body: Padding(
         padding: EdgeInsets.all(16),
@@ -25,13 +31,7 @@ class InviteFriendsPage extends StatelessWidget {
                 color: Colors.pink,
               ),
             ),
-            SizedBox(height: 20),
 
-            // Referral Description
-            Text(
-              "Share your referral code with your friends and get exciting rewards when they sign up. The more friends you invite, the more rewards you can earn!",
-              style: TextStyle(fontSize: 16),
-            ),
             SizedBox(height: 20),
 
             // Referral Code Section
@@ -59,7 +59,9 @@ class InviteFriendsPage extends StatelessWidget {
                       // Copy referral code to clipboard
                       Clipboard.setData(ClipboardData(text: referralCode));
                       ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text("Referral code copied to clipboard!")),
+                        SnackBar(
+                            content:
+                                Text("Referral code copied to clipboard!")),
                       );
                     },
                   ),
@@ -101,21 +103,20 @@ class InviteFriendsPage extends StatelessWidget {
                 ),
               ],
             ),
-            SizedBox(height: 20),
 
             // Referral Program Info
             Text(
               "How It Works:",
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
-            SizedBox(height: 10),
+            SizedBox(height: 1),
             Text(
               "1. Share your referral code with your friends.\n"
               "2. When they sign up using your code, they get a discount.\n"
               "3. You earn rewards once they make their first purchase or complete an action.",
               style: TextStyle(fontSize: 16),
             ),
-            SizedBox(height: 20),
+            SizedBox(height: 10),
 
             // Call to Action Button
             Center(
@@ -123,15 +124,21 @@ class InviteFriendsPage extends StatelessWidget {
                 onPressed: () {
                   // You can add further functionality here (e.g., redirect to a referral landing page)
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text("Invite friends and start earning rewards!")),
+                    SnackBar(
+                        content:
+                            Text("Invite friends and start earning rewards!")),
                   );
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.pink, // Button color
-                  padding: EdgeInsets.symmetric(horizontal: 40, vertical: 12),
+                  backgroundColor: AppTheme.primaryColor, // Button color
+                  padding: EdgeInsets.symmetric(horizontal: 40, vertical: 5),
                   textStyle: TextStyle(fontSize: 16),
                 ),
-                child: Text("Invite Friends Now"),
+                child: Text(
+                  "Invite Friends Now",
+                  style: TextStyle(
+                      color: Colors.white, fontFamily: 'Outfit-Regular'),
+                ),
               ),
             ),
           ],

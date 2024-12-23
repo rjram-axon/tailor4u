@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tailor4u/sections/app_theme.dart';
 
 class OrderDetailsPage extends StatelessWidget {
   final List<Map<String, dynamic>> orderItems = [
@@ -40,7 +41,7 @@ class OrderDetailsPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text("Order Details" ,style: TextStyle(color: Colors.white, fontFamily: 'Outfit-Regular')),
-        backgroundColor: Color(0xFFBE359C),
+        backgroundColor: AppTheme.primaryColor,
         iconTheme: IconThemeData(color: Colors.white),
       ),
       body: Padding(

@@ -162,6 +162,7 @@ class _MainPageState extends State<MainPage> {
         return false;
       },
       child: Scaffold(
+        backgroundColor: const Color(0xFFF6F6F6),
         appBar: PreferredSize(
           preferredSize: Size.fromHeight(50), // Set the height explicitly
           child: AppBar(
@@ -172,11 +173,13 @@ class _MainPageState extends State<MainPage> {
             automaticallyImplyLeading: false,
             title: Center(
               child: Text(
-                "BLOUSE CRAFT",
+                "TAILUX",
                 style: TextStyle(
-                  fontSize: 14,
+                  fontSize: 26,
                   color: Colors.white,
-                  fontFamily: 'Outfit-Regular',
+                  fontFamily: 'Sheina',
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 7
                 ),
               ),
             ),
@@ -270,104 +273,45 @@ class _MainPageState extends State<MainPage> {
                                 ),
                               ),
                               SizedBox(height: 20),
-                              Container(
-                                padding: EdgeInsets.all(
-                                    16), // Add padding to the container for spacing
-                                decoration: BoxDecoration(
-                                  color: Color(
-                                      0xFFE7DBEF), // Light pink background shade
-                                  borderRadius: BorderRadius.circular(
-                                      8), // Optional: to give rounded corners
-                                ),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Text(
-                                          "Category",
-                                          style: TextStyle(
-                                            fontFamily: 'Outfit-Regular',
-                                            fontWeight: FontWeight.bold,
-                                            color: Color(
-                                                0xFF6E3482), // Highlighting the category title
-                                          ),
-                                        ),
-                                        TextButton(
-                                          onPressed: () {
-                                            // Add your onPressed logic here
-                                          },
-                                          child: Row(
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: [
-                                              Text(
-                                                "See all",
-                                                style: TextStyle(
-                                                    fontFamily:
-                                                        'Outfit-Regular',
-                                                    color: Colors.black),
-                                              ),
-                                              SizedBox(
-                                                  width:
-                                                      4), // Add some spacing between text and icon
-                                              Icon(
-                                                Icons
-                                                    .arrow_forward_ios, // Right arrow icon
-                                                color: Colors.black,
-                                                size:
-                                                    12, // Adjust the size as needed
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    SizedBox(height: 16),
-                                    // Space below Category section
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      children: [
-                                        // Small images in a row
-                                        Image.asset(
-                                          'assets/item1.png', // Replace with your image paths
-                                          width: 65,
-                                          height: 60,
-                                          fit: BoxFit.cover,
-                                        ),
-                                        SizedBox(width: 11),
-                                        Image.asset(
-                                          'assets/item2.png', // Replace with your image paths
-                                          width: 65,
-                                          height: 60,
-                                          fit: BoxFit.cover,
-                                        ),
-                                        SizedBox(width: 11),
-                                        Image.asset(
-                                          'assets/Signup.png', // Replace with your image paths
-                                          width: 65,
-                                          height: 60,
-                                          fit: BoxFit.cover,
-                                        ),
-                                        SizedBox(width: 11),
-                                        Image.asset(
-                                          'assets/OTP.png', // Replace with your image paths
-                                          width: 65,
-                                          height: 60,
-                                          fit: BoxFit.cover,
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              ),
 
+                              //Categories
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  SizedBox(
+                                      height:
+                                          10), // Space below Category section
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 0.0),
+                                    child: SingleChildScrollView(
+                                      scrollDirection: Axis
+                                          .horizontal, // Enables horizontal scrolling
+                                      child: Row(
+                                        children: [
+                                          _buildCategoryWithLabel(
+                                              'assets/item1.png', 'Category 1'),
+                                          SizedBox(
+                                              width:
+                                                  16), // Space between categories
+                                          _buildCategoryWithLabel(
+                                              'assets/item2.png', 'Category 2'),
+                                          SizedBox(width: 16),
+                                          _buildCategoryWithLabel(
+                                              'assets/Signup.png', 'Signup'),
+                                          SizedBox(width: 16),
+                                          _buildCategoryWithLabel(
+                                              'assets/OTP.png', 'OTP'),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
                               SizedBox(
                                 height: 24,
                               ),
-                              // Categories
+                              // Carousel
                               carousel_slider.CarouselSlider.builder(
                                 options: carousel_slider.CarouselOptions(
                                   height: 200, // Height of the carousel
@@ -394,12 +338,13 @@ class _MainPageState extends State<MainPage> {
                                           decoration: BoxDecoration(
                                             borderRadius:
                                                 BorderRadius.circular(16),
-                                            color: Colors.grey,
+                                            color: AppTheme.secondaryColor,
                                           ),
                                           child: Center(
                                             child: Text(
                                               "Item ${index + 1}",
                                               style: TextStyle(
+                                                fontFamily: 'Outfit-Regular',
                                                   color: Colors.white,
                                                   fontSize: 20),
                                             ),
@@ -420,187 +365,189 @@ class _MainPageState extends State<MainPage> {
                                     dotWidth: 8,
                                     spacing: 8,
                                     expansionFactor: 3,
-                                    dotColor: Colors.grey,
-                                    activeDotColor: Color(0xFF49225B),
+                                    dotColor: AppTheme.secondaryColor,
+                                    activeDotColor: AppTheme.primaryColor,
                                   ),
                                 ),
                               ),
                               SizedBox(height: 15),
+
                               // Filters
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
-                                children: [
-                                  // Sort Button (Trigger Bottom Modal Sheet)
-                                  Container(
-                                    height: 40,
-                                    decoration: BoxDecoration(
-                                      border: Border.all(
-                                        color: Colors.black, // Border color
-                                        width: 1.0, // Border width
-                                      ),
-                                      borderRadius: BorderRadius.circular(
-                                          50), // Rounded corners
-                                      // Background color for the button
-                                    ),
-                                    child: TextButton(
-                                      onPressed: () {
-                                        // Show Bottom Modal Sheet for Sorting
-                                        showModalBottomSheet(
-                                          context: context,
-                                          builder: (BuildContext context) {
-                                            return Container(
-                                              height: 350,
-                                              padding: EdgeInsets.all(16),
-                                              child: Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  Text(
-                                                    "Sort By",
-                                                    style: TextStyle(
-                                                      fontSize: 20,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      color: Colors.pink,
-                                                    ),
-                                                  ),
-                                                  ListTile(
-                                                    title: Text("All"),
-                                                    onTap: () {
-                                                      setState(() {
-                                                        selectedSortOption =
-                                                            'All';
-                                                      });
-                                                      Navigator.pop(context);
-                                                      sortItems();
-                                                    },
-                                                  ),
-                                                  ListTile(
-                                                    title: Text(
-                                                        "Price: Low to High"),
-                                                    onTap: () {
-                                                      setState(() {
-                                                        selectedSortOption =
-                                                            'Price: Low to High';
-                                                      });
-                                                      Navigator.pop(context);
-                                                      sortItems();
-                                                    },
-                                                  ),
-                                                  ListTile(
-                                                    title: Text(
-                                                        "Price: High to Low"),
-                                                    onTap: () {
-                                                      setState(() {
-                                                        selectedSortOption =
-                                                            'Price: High to Low';
-                                                      });
-                                                      Navigator.pop(context);
-                                                      sortItems();
-                                                    },
-                                                  ),
-                                                  ListTile(
-                                                    title: Text("Newest"),
-                                                    onTap: () {
-                                                      setState(() {
-                                                        selectedSortOption =
-                                                            'Newest';
-                                                      });
-                                                      Navigator.pop(context);
-                                                      sortItems();
-                                                    },
-                                                  ),
-                                                  ListTile(
-                                                    title: Text("Popularity"),
-                                                    onTap: () {
-                                                      setState(() {
-                                                        selectedSortOption =
-                                                            'Popularity';
-                                                      });
-                                                      Navigator.pop(context);
-                                                      sortItems();
-                                                    },
-                                                  ),
-                                                ],
-                                              ),
-                                            );
-                                          },
-                                        );
-                                      },
-                                      child: Row(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          Icon(
-                                            FontAwesomeIcons
-                                                .sliders, // Icon on the left
-                                            size: 17.0, // Customize size
-                                            color:
-                                                Colors.black, // Customize color
-                                          ),
-                                          SizedBox(
-                                              width:
-                                                  4), // Add some spacing between icon and text
-                                          Text(
-                                            selectedSortOption.isEmpty
-                                                ? "Sort By"
-                                                : selectedSortOption, // Show selected option or default text
-                                            style: TextStyle(
-                                              fontFamily: 'Outfit-Regular',
-                                              color: Colors.black,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                  // Filter Button with the same theme as Sort
-                                  Container(
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(
-                                          15), // Rounded corners
-                                      color: Color(
-                                          0xFFF8E1F4), // Background color for the button
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Colors.black.withOpacity(
-                                              0.2), // Shadow effect
-                                          blurRadius: 6, // Subtle blur effect
-                                          offset:
-                                              Offset(2, 2), // Shadow position
-                                        ),
-                                      ],
-                                    ),
-                                    child: TextButton(
-                                      onPressed: () {
-                                        // Implement filter logic here
-                                      },
-                                      child: Row(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          Icon(
-                                            FontAwesomeIcons
-                                                .filter, // Filter icon
-                                            size: 17.0, // Customize size
-                                            color:
-                                                Colors.black, // Customize color
-                                          ),
-                                          SizedBox(
-                                              width:
-                                                  4), // Add some spacing between icon and text
-                                          Text(
-                                            "Filter", // Text for the button
-                                            style: TextStyle(
-                                              fontFamily: 'Outfit-Regular',
-                                              color: Colors.black,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
+                              // Row(
+                              //   mainAxisAlignment:
+                              //       MainAxisAlignment.spaceEvenly,
+                              //   children: [
+                              //     // Sort Button (Trigger Bottom Modal Sheet)
+                              //     Container(
+                              //       height: 40,
+                              //       decoration: BoxDecoration(
+                              //         border: Border.all(
+                              //           color: textColor, // Border color
+                              //           width: 1.0, // Border width
+                              //         ),
+                              //         borderRadius: BorderRadius.circular(
+                              //             50), // Rounded corners
+                              //         // Background color for the button
+                              //       ),
+                              //       child: TextButton(
+                              //         onPressed: () {
+                              //           // Show Bottom Modal Sheet for Sorting
+                              //           showModalBottomSheet(
+                              //             context: context,
+                              //             builder: (BuildContext context) {
+                              //               return Container(
+                              //                 height: 350,
+                              //                 padding: EdgeInsets.all(16),
+                              //                 child: Column(
+                              //                   crossAxisAlignment:
+                              //                       CrossAxisAlignment.start,
+                              //                   children: [
+                              //                     Text(
+                              //                       "Sort By",
+                              //                       style: TextStyle(
+                              //                         fontSize: 20,
+                              //                         fontWeight:
+                              //                             FontWeight.bold,
+                              //                         color: textColor,
+                              //                       ),
+                              //                     ),
+                              //                     ListTile(
+                              //                       title: Text("All"),
+                              //                       onTap: () {
+                              //                         setState(() {
+                              //                           selectedSortOption =
+                              //                               'All';
+                              //                         });
+                              //                         Navigator.pop(context);
+                              //                         sortItems();
+                              //                       },
+                              //                     ),
+                              //                     ListTile(
+                              //                       title: Text(
+                              //                           "Price: Low to High"),
+                              //                       onTap: () {
+                              //                         setState(() {
+                              //                           selectedSortOption =
+                              //                               'Price: Low to High';
+                              //                         });
+                              //                         Navigator.pop(context);
+                              //                         sortItems();
+                              //                       },
+                              //                     ),
+                              //                     ListTile(
+                              //                       title: Text(
+                              //                           "Price: High to Low"),
+                              //                       onTap: () {
+                              //                         setState(() {
+                              //                           selectedSortOption =
+                              //                               'Price: High to Low';
+                              //                         });
+                              //                         Navigator.pop(context);
+                              //                         sortItems();
+                              //                       },
+                              //                     ),
+                              //                     ListTile(
+                              //                       title: Text("Newest"),
+                              //                       onTap: () {
+                              //                         setState(() {
+                              //                           selectedSortOption =
+                              //                               'Newest';
+                              //                         });
+                              //                         Navigator.pop(context);
+                              //                         sortItems();
+                              //                       },
+                              //                     ),
+                              //                     ListTile(
+                              //                       title: Text("Popularity"),
+                              //                       onTap: () {
+                              //                         setState(() {
+                              //                           selectedSortOption =
+                              //                               'Popularity';
+                              //                         });
+                              //                         Navigator.pop(context);
+                              //                         sortItems();
+                              //                       },
+                              //                     ),
+                              //                   ],
+                              //                 ),
+                              //               );
+                              //             },
+                              //           );
+                              //         },
+                              //         child: Row(
+                              //           mainAxisSize: MainAxisSize.min,
+                              //           children: [
+                              //             Icon(
+                              //               FontAwesomeIcons
+                              //                   .sliders, // Icon on the left
+                              //               size: 17.0, // Customize size
+                              //               color:
+                              //                   textColor, // Customize color
+                              //             ),
+                              //             SizedBox(
+                              //                 width:
+                              //                     4), // Add some spacing between icon and text
+                              //             Text(
+                              //               selectedSortOption.isEmpty
+                              //                   ? "Sort By"
+                              //                   : selectedSortOption, // Show selected option or default text
+                              //               style: TextStyle(
+                              //                 fontFamily: 'Outfit-Regular',
+                              //                 color: textColor
+                              //               ),
+                              //             ),
+                              //           ],
+                              //         ),
+                              //       ),
+                              //     ),
+                              //     // Filter Button with the same theme as Sort
+                              //     Container(
+                              //       decoration: BoxDecoration(
+                              //         borderRadius: BorderRadius.circular(
+                              //             15), // Rounded corners
+                              //         color: Color(
+                              //             0xFFF8E1F4), // Background color for the button
+                              //         boxShadow: [
+                              //           BoxShadow(
+                              //             color: Colors.black.withOpacity(
+                              //                 0.2), // Shadow effect
+                              //             blurRadius: 6, // Subtle blur effect
+                              //             offset:
+                              //                 Offset(2, 2), // Shadow position
+                              //           ),
+                              //         ],
+                              //       ),
+                              //       child: TextButton(
+                              //         onPressed: () {
+                              //           // Implement filter logic here
+                              //         },
+                              //         child: Row(
+                              //           mainAxisSize: MainAxisSize.min,
+                              //           children: [
+                              //             Icon(
+                              //               FontAwesomeIcons
+                              //                   .filter, // Filter icon
+                              //               size: 17.0, // Customize size
+                              //               color:
+                              //                   Colors.black, // Customize color
+                              //             ),
+                              //             SizedBox(
+                              //                 width:
+                              //                     4), // Add some spacing between icon and text
+                              //             Text(
+                              //               "Filter", // Text for the button
+                              //               style: TextStyle(
+                              //                 fontFamily: 'Outfit-Regular',
+                              //                 color: Colors.black,
+                              //               ),
+                              //             ),
+                              //           ],
+                              //         ),
+                              //       ),
+                              //     ),
+                              //   ],
+                              // ),
+                              
                               SizedBox(height: 16),
                               // Products Grid
                               GridView.builder(
@@ -657,21 +604,21 @@ class _MainPageState extends State<MainPage> {
                                               children: [
                                                 Text(
                                                   "BLOUSE",
-                                                  style: TextStyle(
+                                                  style: TextStyle(fontFamily: 'Outfit-Regular',
                                                       fontWeight:
                                                           FontWeight.bold),
                                                 ),
                                                 Row(
                                                   children: [
                                                     Text("₹1300",
-                                                        style: TextStyle(
+                                                        style: TextStyle(fontFamily: 'Outfit-Regular',
                                                             fontWeight:
                                                                 FontWeight
                                                                     .bold)),
                                                     SizedBox(width: 8),
                                                     Text(
                                                       "₹1500",
-                                                      style: TextStyle(
+                                                      style: TextStyle(fontFamily: 'Outfit-Regular',
                                                         color: Colors.grey,
                                                         decoration:
                                                             TextDecoration
@@ -686,7 +633,7 @@ class _MainPageState extends State<MainPage> {
                                                         color: Colors.pink,
                                                         size: 16),
                                                     SizedBox(width: 4),
-                                                    Text("4.0"),
+                                                    Text("4.0",style: TextStyle(fontFamily: 'Outfit-Reglar'),),
                                                   ],
                                                 ),
                                               ],
@@ -738,7 +685,7 @@ class _MainPageState extends State<MainPage> {
                           _buildNavBarItem(
                             Icons.home,
                             "Home",
-                            Color(0xFF49225B),
+                            AppTheme.primaryColor,
                             () {}, // Handle navigation
                           ),
                           _buildNavBarItem(
@@ -796,6 +743,53 @@ class _MainPageState extends State<MainPage> {
     );
   }
 
+  Widget _buildCategoryWithLabel(String imagePath, String label) {
+    bool isDarkTheme = Theme.of(context).brightness == Brightness.dark;
+    Color backgroundColor = isDarkTheme
+        ? AppTheme.darkBackgroundColor
+        : AppTheme.lightBackgroundColor;
+    Color textColor =
+        isDarkTheme ? AppTheme.darkTextColor : AppTheme.lightTextColor;
+    return Column(
+      children: [
+        _buildCategoryCircle(),
+        SizedBox(height: 8), // Space between the circle and the label
+        Text(
+          label,
+          style: TextStyle(
+            fontFamily: 'Outfit-Regular',
+            fontSize: 14,
+            fontWeight: FontWeight.w500,
+            color: textColor,
+          ),
+          textAlign: TextAlign.center,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildCategoryCircle() {
+    return Container(
+      width: 75,
+      height: 75,
+      decoration: BoxDecoration(
+        color: AppTheme.secondaryColor, // Light pink background shade
+        shape: BoxShape.circle, // Makes the container circular
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.3),
+            blurRadius: 6,
+            offset: Offset(0, 3), // Shadow position
+          ),
+        ],
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(10.0), // Padding inside the circle
+        
+      ),
+    );
+  }
+
   Widget _buildNavBarItem(
       IconData icon, String label, Color color, VoidCallback onTap) {
     bool isDarkTheme = Theme.of(context).brightness == Brightness.dark;
@@ -812,7 +806,7 @@ class _MainPageState extends State<MainPage> {
           Icon(icon, color: color),
           Text(
             label,
-            style: TextStyle(color: color, fontSize: 12),
+            style: TextStyle(fontFamily: 'Outfit-Regular', color: color, fontSize: 12),
           ),
         ],
       ),

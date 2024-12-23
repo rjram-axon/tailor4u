@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tailor4u/sections/app_theme.dart';
 
 class CategoryPage extends StatefulWidget {
   @override
@@ -43,7 +44,7 @@ class _CategoryPageState extends State<CategoryPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text("Categories",style: TextStyle(color: Colors.white, fontFamily: 'Outfit-Regular')),
-        backgroundColor: Color(0xFFBE359C),
+        backgroundColor: AppTheme.primaryColor,
         iconTheme: IconThemeData(color: Colors.white),
       ),
       body: Padding(

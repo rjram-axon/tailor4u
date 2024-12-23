@@ -162,12 +162,12 @@ class _ProfilePageState extends State<ProfilePage> {
         isDarkTheme ? AppTheme.darkTextColor : AppTheme.lightTextColor;
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color(0xFFFAB2EF),
+        backgroundColor: AppTheme.primaryColor.withOpacity(0.5),
         elevation: 0,
         leading: Icon(Icons.arrow_back, color: Colors.black),
       ),
       body: Container(
-        color: Color(0xFFFAB2EF),
+        color: AppTheme.primaryColor.withOpacity(0.5),
         child: Column(
           children: [
             // Profile Picture and Name Section

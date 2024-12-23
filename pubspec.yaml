@@ -99,7 +99,9 @@ flutter:
     - family: Outfit-SemiBold
       fonts:
         - asset: assets/Font/Outfit-SemiBold.ttf
-      
+    - family: Sheina
+      fonts:
+        - asset: assets/Font/Sheina.ttf  
 
   # To add assets to your application, add an assets section, like this:
   # assets:

@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 
 class AppTheme {
   // Define Colors
-  static const Color primaryColor = Color(0xFF49225B);
-  static const Color secondaryColor = Color(0xFFA56ABD);
+  static  Color primaryColor = Colors.pinkAccent.withOpacity(0.85) ;
+  static const Color primary1Color = Colors.pinkAccent ;
+
+  static const Color secondaryColor = Color(0xFFDFCAC3);
 
   // Light Theme Colors
   static const Color lightSecondaryColor = Color(0xFF03DAC6);

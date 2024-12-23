@@ -503,7 +503,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(50),
             side: BorderSide(
-              color: Color(0xFF49225B),
+              color: AppTheme.primaryColor,
               width: 2,
             ),
           ),
@@ -517,7 +517,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
             fontWeight: FontWeight.w500,
             color: _selectedSize == size
                 ? Colors.white
-                : Color(0xFF49225B), // Match text color with background
+                : AppTheme.primaryColor, // Match text color with background
           ),
         ),
       ),
@@ -582,7 +582,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: Row(
         children: [
-          Icon(icon, color: Colors.pink.shade300),
+          Icon(icon, color: AppTheme.primaryColor.withOpacity(0.8)),
           const SizedBox(width: 8),
           Text(info,
               style:

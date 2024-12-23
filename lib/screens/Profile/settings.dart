@@ -54,7 +54,7 @@ class _SettingsPageState extends State<SettingsPage> {
             fontWeight: FontWeight.bold,
           ),
         ),
-        backgroundColor: Color(0xFFBE359C),
+        backgroundColor: AppTheme.primaryColor,
         iconTheme: IconThemeData(color: Colors.white),
         elevation: 5, // Subtle elevation for depth
       ),
@@ -68,7 +68,7 @@ class _SettingsPageState extends State<SettingsPage> {
               trailing: Switch(
                 value: notificationsEnabled,
                 onChanged: toggleNotifications,
-                activeColor: Color(0xFFBE359C),
+                activeColor: AppTheme.primaryColor.withOpacity(0.7),
                 inactiveThumbColor: Colors.white,
                 inactiveTrackColor: Colors.grey[400],
                 activeTrackColor: Color(0xFFBE359C).withOpacity(0.3),
@@ -76,37 +76,37 @@ class _SettingsPageState extends State<SettingsPage> {
             ),
 
             // Theme Setting with Dropdown to select light, dark, or system default
-            _buildListTile(
-              title: "Theme",
-              trailing: DropdownButton<String>(
-                value: selectedTheme,
-                onChanged: (String? newValue) {
-                  if (newValue != null) {
-                    // Ensure the value is non-null
-                    setState(() {
-                      selectedTheme = newValue;
-                    });
-                    // Update the theme based on the selected option
-                    Provider.of<ThemeNotifier>(context, listen: false)
-                        .setTheme(newValue);
-                  }
-                },
-                items: <String>['Light', 'Dark', 'System Default']
-                    .map<DropdownMenuItem<String>>((String value) {
-                  return DropdownMenuItem<String>(
-                    value: value,
-                    child: Text(
-                      value,
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                        color: textColor,
-                      ),
-                    ),
-                  );
-                }).toList(),
-              ),
-            ),
+            // _buildListTile(
+            //   title: "Theme",
+            //   trailing: DropdownButton<String>(
+            //     value: selectedTheme,
+            //     onChanged: (String? newValue) {
+            //       if (newValue != null) {
+            //         // Ensure the value is non-null
+            //         setState(() {
+            //           selectedTheme = newValue;
+            //         });
+            //         // Update the theme based on the selected option
+            //         Provider.of<ThemeNotifier>(context, listen: false)
+            //             .setTheme(newValue);
+            //       }
+            //     },
+            //     items: <String>['Light', 'Dark', 'System Default']
+            //         .map<DropdownMenuItem<String>>((String value) {
+            //       return DropdownMenuItem<String>(
+            //         value: value,
+            //         child: Text(
+            //           value,
+            //           style: TextStyle(
+            //             fontSize: 16,
+            //             fontWeight: FontWeight.w600,
+            //             color: textColor,
+            //           ),
+            //         ),
+            //       );
+            //     }).toList(),
+            //   ),
+            // ),
 
             // Send Feedback Section
             _buildListTile(
@@ -166,7 +166,7 @@ class _SettingsPageState extends State<SettingsPage> {
               )
             : null,
         leading: leadingIcon != null
-            ? Icon(leadingIcon, color: Color(0xFFBE359C))
+            ? Icon(leadingIcon, color: AppTheme.primaryColor)
             : null,
         trailing: trailing,
         onTap: onTap,

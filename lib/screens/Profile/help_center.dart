@@ -1,12 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:tailor4u/sections/app_theme.dart';
 
 class HelpCenterPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Help Center"),
-        backgroundColor: Colors.pink,
+        title: Text(
+          "Help Center",
+          style: TextStyle(color: Colors.white),
+        ),
+        backgroundColor: AppTheme.primaryColor,
+        iconTheme: IconThemeData(color: Colors.white),
       ),
       body: Padding(
         padding: EdgeInsets.all(16),

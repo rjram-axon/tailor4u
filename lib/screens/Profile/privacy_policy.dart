@@ -1,12 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:tailor4u/sections/app_theme.dart';
 
 class PrivacyPolicyPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Privacy Policy"),
-        backgroundColor: Colors.pink,
+        title: Text(
+          "Privacy Policy",
+          style: TextStyle(color: Colors.white),
+        ),
+        backgroundColor: AppTheme.primaryColor,
+        iconTheme: IconThemeData(color: Colors.white),
       ),
       body: Padding(
         padding: EdgeInsets.all(16),
@@ -22,7 +27,7 @@ class PrivacyPolicyPage extends StatelessWidget {
               ),
             ),
             SizedBox(height: 20),
-            
+
             // Introduction Section
             Text(
               "At [Your Company Name], we value your privacy and are committed to protecting your personal information. This Privacy Policy explains how we collect, use, and safeguard your data when you use our services.",
